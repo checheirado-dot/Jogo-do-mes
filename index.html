@@ -106,7 +106,7 @@ body.lh #z{left:auto;right:0}body.lh #k,body.lh #d{right:auto;left:calc(22px + e
 <div class="ov" id="mn" role="dialog" aria-modal="true" aria-labelledby="mt">
  <div class="card hub">
   <header class="hd"><h1 id="mt">Hax<b>Career</b></h1><div class="lv"><b id="lvn">Nv 1</b><i><u id="lvb" style="width:0"></u></i><span id="coin">🪙 0</span></div></header>
-  <nav class="tabs"><button class="chip tb" data-t="p">⚽ Jogar</button><button class="chip tb" data-t="c">🏆 Copa</button><button class="chip tb" data-t="o">🏆 Torneio</button><button class="chip tb" data-t="w">🌍 Ranking</button><button class="chip tb" data-t="r">🎰 Roleta</button><button class="chip tb" data-t="v">👕 Vestiário</button><button class="chip tb" data-t="s">🛒 Loja</button><button class="chip tb" data-t="x">🎉 Comemorar</button><button class="chip tb" data-t="e">🎛 Editor</button></nav>
+  <nav class="tabs"><button class="chip tb" data-t="p">⚽ Jogar</button><button class="chip tb" data-t="c">🏆 Copa</button><button class="chip tb" data-t="o">🏆 Torneio</button><button class="chip tb" data-t="w">🌍 Ranking</button><button class="chip tb" data-t="r">🎰 Roleta</button><button class="chip tb" data-t="v">👕 Vestiário</button><button class="chip tb" data-t="s">🛒 Loja</button><button class="chip tb" data-t="x">🎉 Comemorar</button><button class="chip tb" data-t="e">🎛 Editor</button><button class="chip tb" data-t="n">📜 Novidades</button></nav>
   <section id="tp" class="two">
    <div class="col">
     <fieldset><legend>Dificuldade</legend><div class="seg w">
@@ -164,6 +164,15 @@ body.lh #z{left:auto;right:0}body.lh #k,body.lh #d{right:auto;left:calc(22px + e
    <p class="lead">🎉 Escolha como seu time comemora quando marca um gol. A comemoração fica salva e pode ser trocada quando quiser.</p>
    <div class="tg" id="celebg"></div>
    <p class="sub" id="celebmsg">A comemoração escolhida aparece durante os gols do seu time.</p>
+  </section>
+  <section id="tn" hidden>
+   <p class="lead">📜 Histórico de atualizações do HaxCareer.</p>
+   <ul class="ms" id="cl" style="max-height:48vh;overflow:auto;touch-action:pan-y">
+    <li style="display:block"><b>v2.6 · 17/11/2026</b><br>🏆 Modo Copa ganhou mais 10 seleções campeãs (agora são 18): Brasil 1958, 1962, 1970 e 1994, Alemanha 1974 e 1990, Argentina 1978 e 2022, França 2018 e Itália 1982.<br>📜 Nova aba Novidades com o histórico de atualizações.</li>
+    <li style="display:block"><b>v2.5</b><br>👑 Rei da Quadra com craques e lendas históricas aparecendo como rivais ou aliados, habilidades dos rivais e quadra de rua com torcida crescente.<br>🎉 Comemorações de gol personalizáveis.</li>
+    <li style="display:block"><b>v2.4</b><br>🏆 Torneio das Lendas com 36 times históricos, goleiros próprios e habilidades especiais.<br>🧠 IA que aprende com os próprios erros.</li>
+    <li style="display:block"><b>v2.3</b><br>🌍 Ranking Mundial, 🎰 Roleta de estilos, 🛒 Loja, 🤪 Modo Maluco e multiplayer online.</li>
+   </ul>
   </section>
   <section id="te" hidden><div class="col">
 <label>📷 Zoom da câmera (longe ↔ perto): <b id="zv"></b></label><input type="range" id="zr" min="60" max="160" step="5">
@@ -381,7 +390,7 @@ function legendMind(name,role){
 }
 let spamCnt=0,spamT=0,spamP={x:0,y:0},cornT=0,cornCd=0,tour=false,chal=-1,duel=false,dsel=0,tab='p',kg=false,rk=false,kgS=0,rkO=null,rd=null,lim=90,scorer='',kgSpecialNotice='',kgNoSpecialStreak=0;const pt=[0,0];
 let wallT=0,wallBy=-1,kgSt=0; // paredão: bola que bate na parede e volta para o mesmo time
-const KIT=['cuff','band','vst','band','plain','sash','plain','plain'],lum=h=>{const n=parseInt(h.slice(1),16);return(n>>16&255)*.3+(n>>8&255)*.6+(n&255)*.1};
+const KIT=['cuff','band','vst','band','plain','sash','plain','plain','plain','cuff','band','plain','vst','sash','band','cuff','vst','plain'],lum=h=>{const n=parseInt(h.slice(1),16);return(n>>16&255)*.3+(n>>8&255)*.6+(n&255)*.1};
 const AB={dri:'Elástico (drible)',pas:'Passe genial',vel:'Arrancada',mur:'Muralha (desarme)',fen:'Canhão'},TK={facil:.25,normal:.5,dificil:.7,mundial:.88,inter:.95,extremo:.99},CHd={facil:3,normal:3,dificil:1,mundial:1,inter:1,extremo:1},pops=[],ABC={dri:6,pas:6,vel:12,mur:11,fen:12},CDS={frz:28,lad:20,tel:16,esc:13,fen:12,mur:11,ima:14,est:10,vel:14,dri:6,pas:6};let introT=0,introLen=2.6,introBig=false;
 function popup(x,y,t){const k=(VK.find(v=>v[0].test(t))||[])[1];pops.push({x,y,s:t,l:1,c:k?VC[k][0]:null});if(k)abFx(k,x,y,players.find(q=>q.x===x&&q.y===y))}
 function useAb(p,cd,t){p.abT=ABC[p.ab]||cd;popup(p.x,p.y,t);burst(p.x,p.y,14,'#ffd23f',220,.5)}
@@ -408,7 +417,17 @@ const T=[
  {n:'Itália 2006',c:'#2a6fdb',c2:'#fff',lv:84,st:[['Totti','D'],['Pirlo','M'],['Cannavaro','T','mur']]},
  {n:'Espanha 2010',c:'#d62828',c2:'#ffd23f',lv:87,st:[['Villa','F'],['Iniesta','D'],['Xavi','M','pas']]},
  {n:'Uruguai 1950',c:'#6cb4e4',c2:'#111',lv:78,st:[['Ghiggia','F','vel'],['Schiaffino','M'],['Varela','T']]},
- {n:'Inglaterra 1966',c:'#d41f2d',c2:'#fff',lv:76,st:[['Hurst','F','fen'],['Charlton','M'],['Moore','T']]}];
+ {n:'Inglaterra 1966',c:'#d41f2d',c2:'#fff',lv:76,st:[['Hurst','F','fen'],['Charlton','M'],['Moore','T']]},
+ {n:'Brasil 1970',c:'#f5d300',c2:'#1a7a3a',rc:'#1f5fbf',lv:90,st:[['Pelé','F','fen'],['Jairzinho','D','vel'],['Gérson','M']]},
+ {n:'Brasil 1994',c:'#ffd800',c2:'#0a8f3c',rc:'#1f5fbf',lv:87,st:[['Romário','F','fen'],['Bebeto','D'],['Dunga','T','mur']]},
+ {n:'Alemanha 1974',c:'#e8e8e8',c2:'#111',lv:86,st:[['Gerd Müller','F'],['Beckenbauer','T','mur'],['Overath','M','pas']]},
+ {n:'Argentina 2022',c:'#7ec8f0',c2:'#ffffff',lv:89,st:[['Messi','D','dri'],['Di María','M'],['Enzo Fernández','T']]},
+ {n:'França 2018',c:'#1d4ed8',c2:'#ffffff',lv:88,st:[['Mbappé','F','vel'],['Griezmann','M','pas'],['Kanté','T','mur']]},
+ {n:'Itália 1982',c:'#2a6fdb',c2:'#ffffff',lv:82,st:[['Paolo Rossi','F','fen'],['Conti','D'],['Scirea','T','mur']]},
+ {n:'Brasil 1958',c:'#2a6fdb',c2:'#f5d300',lv:88,st:[['Pelé','F','fen'],['Garrincha','D','dri'],['Didi','M','pas']]},
+ {n:'Alemanha 1990',c:'#f2f2f2',c2:'#d62828',lv:85,st:[['Klinsmann','F','vel'],['Matthäus','M','fen'],['Augenthaler','T']]},
+ {n:'Argentina 1978',c:'#7ec8f0',c2:'#1a2a6c',lv:80,st:[['Kempes','F','fen'],['Ardiles','M'],['Passarella','T','mur']]},
+ {n:'Brasil 1962',c:'#f5d300',c2:'#1a7a3a',rc:'#1f5fbf',lv:86,st:[['Garrincha','D','dri'],['Vavá','F','vel'],['Zito','T']]}];
 function star(lv,k){const a=base(lv+4,lv+2,lv);if(k==='F'){a.finishing=99;a.speed=Math.min(99,lv+8)}if(k==='M'){a.passing=99;a.lp=1;a.control=92}if(k==='D'){a.control=98;a.accel=Math.min(99,lv+8)}if(k==='T'){a.strength=97;a.stamina=95;a.ex=6}return a}
 
 /* ---------- GOLEIROS: o seu é genérico; na Copa e no Torneio o rival usa o goleiro da seleção (tamanho e reflexos próprios) ---------- */
@@ -417,6 +436,7 @@ const GKS={'Brasil 2002':['Marcos',18,.84],'Alemanha 2014':['Neuer',20.5,.97],'A
  'Brasil 1970':['Félix',16.5,.6],'Barcelona 2009':['Valdés',18.5,.82],'Real Madrid 1960':['Domínguez',17,.7],'Milan 1989':['Galli',17.5,.78],'Ajax 1972':['Stuy',17,.66],'Hungria 1954':['Grosics',17.5,.84],'Alemanha 1974':['Maier',18,.9],'Argentina 2022':['Dibu Martínez',18.5,.95],
  'Man. United 1999':['Schmeichel',21,.94],'Bayern 2013':['Neuer',20.5,.97],'Inter 2010':['Júlio César',19,.9],'Liverpool 2019':['Alisson',20,.94],'Itália 1982':['Zoff',18.5,.92],'Real Madrid 2017':['Keylor Navas',18,.88],'Santos 1962':['Gilmar',18,.84],'Holanda 1974':['Jongbloed',17,.68],
  'Juventus 1985':['Tacconi',17.5,.74],'Man. City 2023':['Ederson',19,.92],'Real Madrid 2002':['César',17.5,.8],'Brasil 1958':['Gilmar',18,.84],'Brasil 1982':['Waldir Peres',17,.62],'Brasil 1994':['Taffarel',18.5,.88],'Barcelona 2015':['Ter Stegen',19,.94],'Barcelona 1992':['Zubizarreta',18,.84],
+ 'França 2018':['Lloris',18.5,.9],'Alemanha 1990':['Illgner',18,.82],'Argentina 1978':['Fillol',17.5,.76],'Brasil 1962':['Gilmar',18,.84],
  'Milan 2007':['Dida',19.5,.86],'Bayern 1976':['Maier',18,.9],'Liverpool 1984':['Grobbelaar',18,.8],'Arsenal 2004':['Lehmann',18,.8]};
 const GKQ={facil:.4,normal:.56,dificil:.71,mundial:.83,inter:.92,extremo:.98},GKC=['#7c3aed','#0ea5e9','#f97316','#d946ef','#facc15'];
 const gkNm=t=>(GKS[t.n]||['Goleiro'])[0],hexD=(a,b)=>{const x=parseInt(a.slice(1),16),y=parseInt(b.slice(1),16);return Math.hypot((x>>16)-(y>>16),(x>>8&255)-(y>>8&255),(x&255)-(y&255))};
@@ -1707,14 +1727,14 @@ function syncMenu(){
  const sn=$('sn');sn.classList.toggle('off',cfg.mute);sn.setAttribute('aria-pressed',String(!cfg.mute));sn.setAttribute('aria-label',cfg.mute?'Ligar som':'Desligar som');
  $('lvn').textContent='Nv '+(Math.floor(ST.xp/200)+1);$('lvb').style.width=(ST.xp%200)/2+'%';$('coin').textContent='🪙 '+ST.coins;
  $('ml').innerHTML=ST.ms.map(m=>{const d=MIS.find(x=>x.id===m.id);return '<li>🎯 '+d.t+'<span>+'+Math.ceil(d.r/2)+' 🪙</span></li>'}).join('');
- renderBD();renderTr();if(tab==='w'){rkInit();renderRk()}for(const k of['p','c','v','d','s','o','r','w','x','e'])$('t'+k).hidden=tab!==k;syncEd();
+ renderBD();renderTr();if(tab==='w'){rkInit();renderRk()}for(const k of['p','c','v','d','s','o','r','w','x','e','n'])$('t'+k).hidden=tab!==k;syncEd();
  $('celebg').innerHTML=CELEBRATIONS.map(q=>'<button class="tm" type="button" data-celebrate="'+q.id+'" aria-pressed="'+(ST.celebration===q.id)+'"><span style="font-size:27px">'+q.i+'</span><b>'+q.n+'</b><small>'+q.d+'</small><em>'+(ST.celebration===q.id?'✅ equipada':'Selecionar')+'</em></button>').join('');$('celebmsg').textContent='Comemoração equipada: '+(CELEBRATIONS.find(q=>q.id===ST.celebration)||CELEBRATIONS[0]).n+'. Você usa a sua comemoração; os jogadores da IA escolhem entre várias comemorações ao marcar.';
  $('shl').textContent='🛒 Troque moedas por recompensas · 🪙 '+ST.coins;
  $('shg').innerHTML=SH.map((s,i)=>{const got=(s.k==='perm'&&ST.own[s.id])||(s.k==='sty'&&ST.sty.includes(s.sty)),pf=s.k==='sty'?PROF[s.sty]:null;return '<button class="tm" style="--i:'+i+(s.f?';grid-column:1/-1;border-color:#fbbf24':'')+'" data-s="'+s.id+'"><span style="font-size:24px">'+s.i+'</span><b>'+s.n+'</b><small>'+s.d+'</small>'+(pf?'<small>'+ATT.map(a=>a[1]+' '+pf[a[0]]).join(' · ')+'</small>':'')+'<em>'+(got?'✅ comprado':'🪙 '+s.p+(s.k==='use'?' · tem '+(ST.inv[s.id]||0):''))+'</em></button>'}).join('');
  document.querySelectorAll('.tb').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.t===tab)));
  const sw=(t,k)=>{const c=t.c,d=t.c2,pt=k==='vst'?'repeating-linear-gradient(90deg,'+c+' 0 5px,'+d+' 5px 10px)':k==='band'?'linear-gradient('+c+' 32%,'+d+' 32% 68%,'+c+' 68%)':k==='sash'?'linear-gradient(135deg,'+c+' 38%,'+d+' 38% 62%,'+c+' 62%)':c;
   return '<i style="background:radial-gradient(circle at 35% 30%,rgba(255,255,255,.45),transparent 55%),'+pt+';box-shadow:inset 0 0 0 3px '+d+',0 3px 8px rgba(0,0,0,.4)"></i>'};
- $('cn').textContent='🏆 '+ST.sh.length+'/8 camisas conquistadas · empate: prorrogação (gol de ouro) e pênaltis';$('tg').innerHTML=T.map((t,i)=>'<button class="tm" style="--i:'+i+'" data-c="'+i+'">'+sw(t,KIT[i])+'<b>'+t.n+'</b><small>'+t.st.map(x=>x[0].split(' ')[0]).join(' · ')+'</small><small>★ '+AB[t.st.find(x=>x[2])[2]]+' · 🧤 '+gkNm(t)+'</small><em>'+(ST.sh.includes(i)?'👕 conquistada':'🔒 vença p/ ganhar')+'</em></button>').join('');
+ $('cn').textContent='🏆 '+ST.sh.length+'/'+T.length+' camisas conquistadas · empate: prorrogação (gol de ouro) e pênaltis';$('tg').innerHTML=T.map((t,i)=>'<button class="tm" style="--i:'+i+'" data-c="'+i+'">'+sw(t,KIT[i])+'<b>'+t.n+'</b><small>'+t.st.map(x=>x[0].split(' ')[0]).join(' · ')+'</small><small>★ '+AB[t.st.find(x=>x[2])[2]]+' · 🧤 '+gkNm(t)+'</small><em>'+(ST.sh.includes(i)?'👕 conquistada':'🔒 vença p/ ganhar')+'</em></button>').join('');
  $('sg').innerHTML=[{n:'Amarela',c:'#ffd23f',c2:'#1c1600'}].concat(T).map((t,k)=>{const i=k-1;return i<0||ST.sh.includes(i)?'<button class="tm" data-e="'+i+'" aria-pressed="'+(ST.eq===i)+'">'+sw(t,KIT[i])+'<b>'+t.n+'</b></button>':''}).join('')}
 /* ---------- CÓDIGO DE SAVE: exporta/importa moedas, estilos, camisas, itens e configurações ---------- */
 const svHash=t=>{let h=5381;for(let i=0;i<t.length;i++)h=((h<<5)+h+t.charCodeAt(i))>>>0;return h.toString(36)};
@@ -1868,7 +1888,7 @@ function resize(){dpr=Math.min(devicePixelRatio||1,2);W=cv.clientWidth;H=cv.clie
 addEventListener('resize',resize);addEventListener('orientationchange',()=>{resize();setTimeout(resize,150);setTimeout(resize,500)});if(window.visualViewport)visualViewport.addEventListener('resize',resize);
 const lockLand=()=>{try{screen.orientation&&screen.orientation.lock&&screen.orientation.lock('landscape').catch(()=>{})}catch(e){}};
 function wallFx(){if(!kg)return;const s=Math.hypot(ball.vx,ball.vy);if(s<170)return;burst(ball.x,ball.y,7,'#ffe66d',170,.35);tone(150+Math.random()*50,.07,'square',.05);if(lastP){wallBy=lastP.t;wallT=2.2}}
-function wallPass(p){wallT=0;if(p.t===0){kgSt++;ST.xp+=3;ST.coins+=1;popup(p.x,p.y,'🧱 PAREDÃO');toast('🧱 Paredão! estilo x'+kgSt);burst(p.x,p.y,16,'#ff2d95',230,.5);tone(660,.09,'triangle',.12);tone(880,.1,'triangle',.12,.07)}else popup(p.x,p.y,'🧱 paredão rival')}
+function wallPass(p){wallT=0} // paredão é só física: a bola quica na parede e volta, sem bônus
 function buildStreet(){ // quadra de rua estilo FIFA Street: futsal fechado por paredes e alambrado, grafite, torcida do bairro e neon
  const TW=PW+2*GD+2*PM,TH=PH+2*PM,X0=-GD-PM,Y0=-PM,PK=Math.min(2,Math.max(1,zs*dpr),Math.max(.7,Math.sqrt(3.5e6/(TW*TH))));pitchC=document.createElement('canvas');pitchC.width=Math.ceil(TW*PK);pitchC.height=Math.ceil(TH*PK);
  const c=pitchC.getContext('2d'),cy=PH/2,R=150,NEON=['#ff2d95','#00e5ff','#ffe600','#7cff3a','#ff7a00','#b46bff'];
