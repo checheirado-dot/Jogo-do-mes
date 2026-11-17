@@ -326,7 +326,7 @@ function crzStart(k){crzEnd();crzEv=k;crzT=k==='tele'?1.5:k==='slow'?3:8;
 function crzStep(dt){if(!crz||online||state!=='play'||phase!=='play')return;
  if(crzEv){if((crzT-=dt)<=0){crzEnd();crzNx=4+Math.random()*4}}
  else if((crzNx-=dt)<=0){const ks=Object.keys(CEV).filter(k=>k!==crzLast);crzLast=ks[Math.random()*ks.length|0];crzStart(crzLast)}}
-const vmaxOf=p=>(80+p.a.speed*.9)*.9*(duel&&p===rp?1:(p.rb||1))*(p.vbT>0?1.28:p.bst>0?1.3:1)*(p.kgBoostT>0?1.34:1)*(p.ch||1)*(p.bal>0?.6:1)*(crzEv==='fast'?1.5:1)*(cmT[p.t]>0&&!duel?(p.t?1.08:1.12):1)*((p===myPlayer||(p===rp&&duel))&&!online&&ST.own.spd?1.06:1); // VEL 90 = 161 u/s | VEL 65 = 138 u/s
+const vmaxOf=p=>(80+p.a.speed*.9)*.9*(duel&&p===rp?1:(p.rb||1))*(p.vbT>0?1.28:p.bst>0?1.3:1)*(p.kgBoostT>0?1.34:1)*(p.ch||1)*(crzEv==='fast'?1.5:1)*(cmT[p.t]>0&&!duel?(p.t?1.08:1.12):1)*((p===myPlayer||(p===rp&&duel))&&!online&&ST.own.spd?1.06:1); // VEL 90 = 161 u/s | VEL 65 = 138 u/s
 
 /* ---------- SALVAR (preferências e carreira; falha em silêncio se o navegador bloquear) ---------- */
 const KEY='haxcareer.v2';
@@ -620,7 +620,7 @@ function drawCrowd(){if(kg||!cwd.t0)return;const now=performance.now(),el=(now-c
   g.strokeStyle='#fff';g.lineWidth=1.4;g.beginPath();g.moveTo(q.x-13*z,q.y);g.lineTo(q.x+13*z,q.y);g.moveTo(q.x,q.y-13*z);g.lineTo(q.x,q.y+13*z);g.stroke()}
  g.restore()}
 
-function reset(full,k0=0){ball.sp=0;spamCnt=0;spamT=0;LRN.sh=null;for(const q of players){q.chB=0;q.ch=1;q.bal=q.balCd=0} // volta às posições e dá a saída de bola (time que sofreu o gol)
+function reset(full,k0=0){ball.sp=0;spamCnt=0;spamT=0;LRN.sh=null;for(const q of players){q.chB=0;q.ch=1;q.lu=q.luCd=0} // volta às posições e dá a saída de bola (time que sofreu o gol)
  for(const p of players){p.x=p.t?PW-p.hx*PW:p.hx*PW;p.y=p.hy*PH;p.rk=p.i;p.vx=p.vy=0;p.fx=p.t?-1:1;p.fy=0;p.think=0;p.stun=0;p.legT=0;p.chk=0;p.kb=0;p.tg=null;p.sp=null;p.fall=0;p.dvT=0;p.fb=false;p.pl=null;p.plc=0;p.spl=undefined;if(p.g0)p.r=p.gr}
  for(const p of players){if(p.off){p.x=-4000-p.i*60;p.y=PH/2}else if(p.gk){p.x=p.t?PW-30:30;p.y=PH/2}}ctrl=myPlayer;pend=null;recv=null;ch=0;
  cmN[0]=cmN[1]=0;cmLast=null;if(full){cmT[0]=cmT[1]=0;rbuf=[];rep=null;pk=null;pkw=-1;ufz=0;score=[0,0];clock=0;lastP=null;finalGoalFx.t=0;fxs.length=0;fxClr();players.forEach(p=>p.st=1);resetAd();lrnReset();pu.turbo=pu.super=pu.gelo=0;orbs.length=0;en=1;fire=0;orbT=6;myPlayer.rb=1;sty[1]=STK[Math.floor(Math.random()*STK.length)]}
@@ -712,9 +712,11 @@ function switchNear(){return;let b=null,bd=1e9;
 /* ---------- MOVIMENTO (atributos reais: velocidade, aceleração, resistência) ---------- */
 function move(p,ix,iy,run,dt){
  let l=Math.hypot(ix,iy);if(l>1){ix/=l;iy/=l;l=1}
- const vm=vmaxOf(p),sp0=Math.hypot(p.vx,p.vy);let acc=(400+p.a.accel*5)*(p.kb>0?.45:1)*(p.bal>0?.4:1)*(p.vbT>0?1.4:1)*(p===ctrl&&inp.kick?.8:1);p.kb=(p.kb||0)-dt;p.bal=(p.bal||0)-dt;p.balCd=(p.balCd||0)-dt;p.vbT=(p.vbT||0)-dt;
+ const vm=vmaxOf(p),sp0=Math.hypot(p.vx,p.vy);let acc=(400+p.a.accel*5)*(p.kb>0?.45:1)*(p.lu>0?.3:1)*(p.vbT>0?1.4:1)*(p===ctrl&&inp.kick?.8:1);p.kb=(p.kb||0)-dt;p.lu=(p.lu||0)-dt;p.luCd=(p.luCd||0)-dt;p.vbT=(p.vbT||0)-dt;
  if(sp0>50&&l>.2){const ca=(p.vx*ix+p.vy*iy)/(sp0*l); // peso do corpo: virar/inverter em velocidade custa aceleração, o jogador "escorrega" para o lado e volta
-  if(ca<.5)acc*=1-(1-ca)/2*.62*Math.min(1,sp0/vm);if(ca<.15&&p===carrier&&sp0>vm*.6&&state==='play')balBreak(p)}
+  if(ca<.5)acc*=1-(1-ca)/2*.62*Math.min(1,sp0/vm);if(ca<-.55&&sp0>vm*.62&&!(p.lu>0)&&!(p.luCd>0)&&!online&&state==='play'&&!p.gk){ // inversão brusca: o corpo segue para a frente (peso), só depois volta
+   const ag=Math.max(.12,Math.min(.34,.3*(1.25-p.a.accel/130))),k=Math.min(1,(sp0/vm-.6)/.4); // quem tem mais aceleração se recupera mais rápido
+   p.lu=ag;p.luCd=ag+.5;p.vx+=p.vx/sp0*vm*.1*k;p.vy+=p.vy/sp0*vm*.1*k;acc*=.3}}
  let dx=ix*vm-p.vx,dy=iy*vm-p.vy;const dl=Math.hypot(dx,dy),md=acc*dt;
  if(dl>md){dx*=md/dl;dy*=md/dl}p.vx+=dx;p.vy+=dy;
  if(l>.2){p.fx+=(ix/l-p.fx)*Math.min(1,dt*14);p.fy+=(iy/l-p.fy)*Math.min(1,dt*14);const f=Math.hypot(p.fx,p.fy)||1;p.fx/=f;p.fy/=f}
@@ -1037,16 +1039,6 @@ function chStep(dt){for(const p of players){if(p.gk||p.off||p===ctrl){p.chB=0;p.
   if(on)p.chB=Math.min(1,(p.chB||0)+dt*.4); // sobe devagar (~2,5 s para o máximo)
   else p.chB=(state!=='play'||p===c||(c&&c.t===p.t))?0:Math.max(0,(p.chB||0)-dt*2); // roubou/perdeu a jogada: reset imediato
   p.ch=p.chB>0?(80+(sp+(tg-sp)*p.chB)*.9)/(80+sp*.9):1}}
-/* ---------- QUEBRA DE EQUILÍBRIO: um corte seco em velocidade (deslocamento de peso) desequilibra o marcador que vinha em cima ---------- */
-function balBreak(p){if(online)return;for(const q of players){if(q.t===p.t||q.gk||q.off||q.bal>0||q.balCd>0||dist(p,q)>62)continue;
- const dx=p.x-q.x,dy=p.y-q.y,l=Math.hypot(dx,dy)||1;if((q.vx*dx+q.vy*dy)/l<30)continue; // só quem estava indo em cima
- const rs=q.t===1?({facil:1,normal:.9,dificil:.75,mundial:.6,inter:.5,extremo:.4}[cfg.diff]||.8):1; // rivais difíceis resistem mais
- if(Math.random()>(.45+p.a.control/99*.55)*rs)continue; // controle de bola do atacante ajuda
- q.bal=.6;q.balCd=3.2;q.vx*=.5;q.vy*=.5;burst(q.x,q.y,8,'#d8c8a0',110,.45);popup(q.x,q.y,'Desequilibrou!');tone(180,.12,'sawtooth',.08)}}
-function drawBal(){const T=performance.now()/1000;for(const p of players){if(!(p.bal>0)||p.off)continue;const w=Math.sin(T*28)*3,vl=Math.hypot(p.vx,p.vy)||1,ux=p.vx/vl,uy=p.vy/vl;
- g.save();g.globalAlpha=Math.min(1,p.bal*3);g.strokeStyle='#e8d9b0';g.lineWidth=2.5;g.lineCap='round';
- for(let j=-1;j<=1;j+=2){g.beginPath();g.moveTo(p.x-ux*(p.r+2)+uy*j*7,p.y-uy*(p.r+2)-ux*j*7);g.lineTo(p.x-ux*(p.r+18)+uy*j*(7+w),p.y-uy*(p.r+18)-ux*j*(7+w));g.stroke()} // marcas de derrapagem
- g.font='900 12px sans-serif';g.textAlign='center';g.fillText('💫',p.x+w,p.y-p.r-8);g.restore()}}
 /* ---------- ENTRADA DE PARTIDA: cortina das cores dos times, feixes de luz, brasas, vinheta e "BOLA ROLANDO!" ---------- */
 function introFx(p,cx,hc,ac,rival,big,ease){const T=performance.now()/1000,cl=(v,a,b)=>Math.max(a,Math.min(b,v)),A=g.globalAlpha;
  g.save();g.globalCompositeOperation='lighter';
@@ -1469,7 +1461,7 @@ function drawAb(){
   if(p.stun>0&&!p.gk){const k=performance.now()/180;g.fillStyle='#ffd23f';g.font='900 13px sans-serif';g.textAlign='center'; // estrelinhas: atordoado
    for(let i=0;i<3;i++){const a=k+i*2.094;g.fillText('★',p.x+Math.cos(a)*(p.r+6),p.y-p.r-6+Math.sin(a)*5)}}}
  for(const q of rings){const t=1-q.l/q.m,e=1-Math.pow(1-t,3);g.globalAlpha=Math.max(0,1-t);g.beginPath();g.arc(q.x,q.y,q.r+(q.r1-q.r)*e,0,7);g.strokeStyle=q.c;g.lineWidth=1+4*(1-t);g.stroke()}
- g.globalAlpha=1;drawVF();drawBal()}
+ g.globalAlpha=1;drawVF()}
 /* ---------- 1v1 BOLA DE OURO: cada craque tem 2 habilidades especiais e IA própria (duelAI) ---------- */
 AB.ima='Ímã (bola cola no pé)';AB.frz='Hipnose (congela você)';let ufz=0;
 const BD=[
