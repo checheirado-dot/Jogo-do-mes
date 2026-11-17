@@ -1194,7 +1194,7 @@ async function rtcApply(code){
 function sendSt(){const t=performance.now();if(!rm||t-sendT<60)return;sendT=t;
  rm.emit('st',{f:fldNow,p:players.map(p=>[p.x|0,p.y|0,p.fall>0?1:0]),b:[ball.x|0,ball.y|0,ball.vx|0,ball.vy|0],s:score,c:+clock.toFixed(1),a:state,m:msg,e:phase==='end'?1:0,h:players.map((p,i)=>p===myPlayer||p.rem?i:-1).filter(i=>i>=0)}).catch(()=>{})}
 function slots(o,n){return(o.tr||n>=3)?[1,0,2,6]:[1,4]}
-function myIdx(){const o=omClean(LB.o||{}),SL=slots(o,1+(LB.gl||[]).length);return SL[(LB.slot>=0?LB.slot:0)+1]||4}
+function myIdx(){const o=omClean(LB.o||{}),SL=slots(o,1+(LB.gl||[]).length),i=SL[(LB.slot>=0?LB.slot:0)+1];return i===undefined?4:i}
 function applySt(d){hu=d.h||[];
  if(d.f>=0&&d.f<=2&&d.f!==fldNow)setField(d.f);
  players.forEach((p,i)=>{if(!d.p[i])return;p.tx=d.p[i][0];p.ty=d.p[i][1];p.fall=d.p[i][2]?1:0});ball.tx=d.b[0];ball.ty=d.b[1];ball.vx=d.b[2];ball.vy=d.b[3];
@@ -1243,9 +1243,9 @@ function upd(dt){
   if(nearT[t]!==pv)chL[t]=.5;
   nearT[t+2]=(carrier&&carrier.t===t)?null:(b2&&b2!==nearT[t]&&(!carrier||dist(b2,ball)<420)?b2:null)} // segundo: cobre (adversário com a bola) ou também vai na bola solta
  for(const p of players){
-  if(setp&&p!==taker){p.vx=p.vy=0;p.cool-=dt;continue} // bola parada: só o cobrador se mexe
+  if(setp&&p!==taker&&!(online&&taker&&(p.rem||p===myPlayer)&&(taker.t===p.t||taker.rem||taker===myPlayer))){p.vx=p.vy=0;p.cool-=dt;continue} // bola parada: só o cobrador se mexe (no coop online, todos os humanos do seu time também)
   if(kg&&kgSpecialStep(p,dt))continue;
-  if(setp&&((p!==ctrl&&!(online&&p.rem))||setT>6)){ // cobrador da IA espera um instante e cobra (se o usuário demorar 6s, cobra por ele)
+  if(setp&&p===taker&&((p!==ctrl&&!(online&&p.rem))||setT>6)){ // cobrador da IA espera um instante e cobra (se o usuário demorar 6s, cobra por ele)
    if(setT>.9){const b=bestMate(p);exec(p,b.m?{k:'pass',m:b.m}:{k:'drive'},true)}
    p.vx=p.vy=0;p.cool-=dt;continue}
   if(p===ctrl)move(p,ufz>0?0:ix,ufz>0?0:iy,0,dt);
