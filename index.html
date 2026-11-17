@@ -1192,15 +1192,15 @@ async function rtcGuest(code){
 async function rtcApply(code){
  try{await rtc.pc.setRemoteDescription({type:'answer',sdp:await dec(code)});olMsg('Conectando...')}catch(e){olMsg('Código de resposta inválido. Confira se colou inteiro.')}}
 function sendSt(){const t=performance.now();if(!rm||t-sendT<33)return;sendT=t;
- rm.emit('st',{f:fldNow,p:players.map(p=>[p.x|0,p.y|0,p.fall>0?1:0]),b:[ball.x|0,ball.y|0,ball.vx|0,ball.vy|0],s:score,c:+clock.toFixed(1),a:state,m:msg,e:phase==='end'?1:0,h:players.map((p,i)=>p===myPlayer||p.rem?i:-1).filter(i=>i>=0)}).catch(()=>{})}
+ rm.emit('st',{f:fldNow,p:players.map(p=>[p.x|0,p.y|0,p.fall>0?1:0,p.vx|0,p.vy|0]),b:[ball.x|0,ball.y|0,ball.vx|0,ball.vy|0],s:score,c:+clock.toFixed(1),a:state,m:msg,e:phase==='end'?1:0,h:players.map((p,i)=>p===myPlayer||p.rem?i:-1).filter(i=>i>=0)}).catch(()=>{})}
 function slots(o,n){return(o.tr||n>=3)?[1,0,2,6]:[1,4]}
 function myIdx(){const o=omClean(LB.o||{}),SL=slots(o,1+(LB.gl||[]).length),i=SL[(LB.slot>=0?LB.slot:0)+1];return i===undefined?4:i}
 function applySt(d){hu=d.h||[];
  if(d.f>=0&&d.f<=2&&d.f!==fldNow)setField(d.f);
- players.forEach((p,i)=>{if(!d.p[i])return;p.tx=d.p[i][0];p.ty=d.p[i][1];p.fall=d.p[i][2]?1:0});ball.tx=d.b[0];ball.ty=d.b[1];ball.vx=d.b[2];ball.vy=d.b[3];
+ players.forEach((p,i)=>{if(!d.p[i])return;p.tx=d.p[i][0];p.ty=d.p[i][1];p.fall=d.p[i][2]?1:0;p.tvx=d.p[i][3]||0;p.tvy=d.p[i][4]||0});ball.tx=d.b[0];ball.ty=d.b[1];ball.vx=d.b[2];ball.vy=d.b[3];
  if(phase!=='play'){if(d.e)return;
   players.forEach(p=>{p.x=p.tx;p.y=p.ty});ball.x=ball.tx;ball.y=ball.ty;score=[d.s[0],d.s[1]];
-  show('ol',false);show('mn',false);show('en',false);show('pz',false);clearInput();ctrl=players[myIdx()];phase='play';audio();if(AC&&AC.resume)AC.resume();sfx('whistle')}
+  show('ol',false);show('mn',false);show('en',false);show('pz',false);clearInput();ctrl=players[myIdx()];phase='play';audio();if(AC&&AC.resume)AC.resume();sfx('whistle');lockLand()}
  if(d.s[0]>score[0])cheer(0);else if(d.s[1]>score[1])cheer(1);
  score=[d.s[0],d.s[1]];clock=d.c;state=d.a;
  msg=ctrl.t===1?(d.m==='GOL SEU!'||d.m==='GOL!'?'Gol do rival':d.m==='Gol do rival'?'GOL!':d.m):(d.m==='GOL SEU!'?'GOL!':d.m);
@@ -1211,6 +1211,7 @@ function guestStep(d){
  let ix=inp.x,iy=inp.y;if(!stick.on){const k=kb();ix=k[0];iy=k[1]}
  {const l=Math.hypot(ix,iy);if(l>1){ix/=l;iy/=l}}
  for(const p of players){if(p.tx===undefined)continue;
+  p.tx+=(p.tvx||0)*d;p.ty+=(p.tvy||0)*d;
   if(p===ctrl&&!p.fall){ // previsão local: o próprio jogador responde na hora e só é corrigido de leve pelo estado do anfitrião
    const vm=vmaxOf(p),ax=(400+p.a.accel*5)*d;let dx=ix*vm-(p.pvx||0),dy=iy*vm-(p.pvy||0);const dl=Math.hypot(dx,dy);if(dl>ax){dx*=ax/dl;dy*=ax/dl}
    p.pvx=(p.pvx||0)+dx;p.pvy=(p.pvy||0)+dy;p.x+=p.pvx*d;p.y+=p.pvy*d;
@@ -1222,9 +1223,9 @@ function guestStep(d){
  ball.tx+=ball.vx*d;ball.ty+=ball.vy*d; // a bola continua andando entre um pacote e outro
  ball.x+=(ball.tx-ball.x)*kb2;ball.y+=(ball.ty-ball.y)*kb2;
  if(inp.kick)kl=1;
- fxStep(d);const t=performance.now();if(!rm)return;const kNow=(inp.kick||kl)&&!gkPrev;gkPrev=!!(inp.kick||kl);if(t-sendT<33&&!kNow)return;sendT=t;
+ fxStep(d);const t=performance.now();if(!rm)return;const kNow=(inp.kick||kl)&&!gkPrev;gkPrev=!!(inp.kick||kl);const chg=Math.abs(ix-lsx)+Math.abs(iy-lsy)>.08;if(t-sendT<(chg?12:33)&&!kNow)return;sendT=t;lsx=ix;lsy=iy;
  rm.emit('in',{x:Math.round(ix*100),y:Math.round(iy*100),k:(inp.kick||kl)?1:0,r:0,p:act.pass?1:0}).catch(emErr);act.pass=false;if(!inp.kick)kl=0}
-let gkPrev=false;
+let gkPrev=false,lsx=0,lsy=0;
 
 /* ---------- LOOP DA PARTIDA ---------- */
 function upd(dt){
@@ -1767,7 +1768,8 @@ const PM=80;let W,H,dpr,sc,zs=1,zs0=1,ox,oy,pitchC=null,vigC=null;const cam={x:P
 function resize(){dpr=Math.min(devicePixelRatio||1,2);W=cv.clientWidth;H=cv.clientHeight;
  cv.width=W*dpr;cv.height=H*dpr;pitchC=null;sc=Math.min(W/(PW+2*GD+30),H/(PH+50));zs0=zs=Math.max(sc,Math.min(W/800,H/420));vigC=null;
  const cs=getComputedStyle($('sa'));SA.l=parseFloat(cs.paddingLeft)||0;SA.r=parseFloat(cs.paddingRight)||0}
-addEventListener('resize',resize);
+addEventListener('resize',resize);addEventListener('orientationchange',()=>{resize();setTimeout(resize,150);setTimeout(resize,500)});if(window.visualViewport)visualViewport.addEventListener('resize',resize);
+const lockLand=()=>{try{screen.orientation&&screen.orientation.lock&&screen.orientation.lock('landscape').catch(()=>{})}catch(e){}};
 function wallFx(){if(!kg)return;const s=Math.hypot(ball.vx,ball.vy);if(s<170)return;burst(ball.x,ball.y,7,'#ffe66d',170,.35);tone(150+Math.random()*50,.07,'square',.05);if(lastP){wallBy=lastP.t;wallT=2.2}}
 function wallPass(p){wallT=0;if(p.t===0){kgSt++;ST.xp+=3;ST.coins+=1;popup(p.x,p.y,'🧱 PAREDÃO');toast('🧱 Paredão! estilo x'+kgSt);burst(p.x,p.y,16,'#ff2d95',230,.5);tone(660,.09,'triangle',.12);tone(880,.1,'triangle',.12,.07)}else popup(p.x,p.y,'🧱 paredão rival')}
 function buildStreet(){ // quadra de rua estilo FIFA Street: futsal fechado por paredes e alambrado, grafite, torcida do bairro e neon
@@ -2146,6 +2148,7 @@ g.fillStyle='#fff';g.font='800 14px "Trebuchet MS",sans-serif';g.fillText(Math.f
 /* ---------- LOOP (passo fixo de física: 120 Hz, independente do FPS) ---------- */
 let last=performance.now(),acc=0;
 function loop(t){const d=Math.min(.1,(t-last)/1000);last=t;
+ if(cv.clientWidth!==W||cv.clientHeight!==H)resize();
  // A partida só começa depois da apresentação: durante a entrada não há física,
  // avanço do relógio nem comandos acumulados do jogador.
  const introActive=phase==='play'&&introT>0;
