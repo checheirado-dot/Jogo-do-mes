@@ -2164,7 +2164,12 @@ $('oll').addEventListener('click',()=>{leaveRoom();olMsg('')});
 $('olb').addEventListener('click',()=>{leaveRoom();unwatch();show('ol',false);show('mn',true)});
 resize();applyProfile();applyDifficulty();reset(true);showMenu();requestAnimationFrame(loop);setTimeout(hashJoin,800);addEventListener('hashchange',hashJoin);
 })();
-if("serviceWorker" in navigator)addEventListener("load",()=>navigator.serviceWorker.register("sw.js").catch(()=>{}));
+if("serviceWorker" in navigator){const had=!!navigator.serviceWorker.controller;
+ navigator.serviceWorker.addEventListener("controllerchange",()=>{if(had&&!document.getElementById("mn").hidden)location.reload()});
+ addEventListener("load",()=>navigator.serviceWorker.register("sw.js").catch(()=>{}))}
+/* recarrega sozinho no menu quando sai uma versão nova (nunca no meio de uma partida) */
+(()=>{let v0=null;const chk=async()=>{try{const r=await fetch(location.pathname,{method:"HEAD",cache:"no-store"}),v=r.headers.get("etag")||r.headers.get("last-modified");if(!v)return;if(v0===null)v0=v;else if(v!==v0&&!document.getElementById("mn").hidden)location.reload()}catch(e){}};
+ chk();document.addEventListener("visibilitychange",()=>{if(!document.hidden)chk()});setInterval(chk,60000)})();
 </script>
 
 </body></html>
