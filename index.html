@@ -1910,11 +1910,11 @@ let blRun=false,blM=false,blPh=1;const SANDB=()=>bch&&!blM;
 const BLR=[
 {n:'Isagi Yoichi',b:{passing:10,control:6},s:{n:'Chute Direto',d:'Finaliza de primeira, sem dominar a bola, mirando o canto longe do goleiro',p:1.5,fk:1,aim:1,fr:.55,t:2.2,cd:10},ps:{n:'Egocentrismo e Adaptação',d:'Lê a psicologia dos rivais e aliados e se adapta no meio do jogo',a:1.12,p:1.12},aw:[{n:'Metavisão',d:'Vê o campo em 360° e prevê o futuro: corre atrás da bola antes dela chegar',v:1.2,a:1.25,ch:1,t:4,cd:14},{n:'Chute Direto de Duas Armas',d:'Finge o chute com uma perna (atordoa quem está perto) e finaliza com a outra no canto',p:1.6,st:.45,sr:90,fk:1,aim:1,fr:.55,t:2.2,cd:16}]},
 {n:'Nagi Seishirō',b:{accel:10},s:{n:'Domínio Buraco Negro',d:'Puxa a bola para perto e a amortece no toque, deixando-a quase parada',dp:.15,mg:120,t:3,cd:11},ps:{n:'Domínio de Bola Perfeito',d:'Absorve qualquer passe e deixa a bola morta aos pés',dp:.55,a:1.12},aw:[{n:'Giro Zero Reset',d:'Domina no ar, zera a velocidade da bola e arranca em seguida',rs:1,mg:90,a:1.3,t:2,cd:14},{n:'Chute de Voleio Falso',d:'Finge o chute, atordoa os defensores perto e finaliza forte de primeira',st:.55,sr:110,p:1.4,fk:1,fr:.5,t:2.2,cd:16}]},
-{n:'Bachira Meguru',b:{control:10},s:{n:'Drible Elástico e Imprevisível',d:'Gingado solto: muda de direção e de ritmo de forma brusca',v:1.25,a:1.3,zz:200,t:2.5,cd:11},ps:{n:'Futebol Monstro',d:'Joga guiado pela intuição, sempre mais rápido',a:1.15,v:1.08},aw:[{n:'Ginga x Monstro',d:'Ginga brasileira com instinto selvagem: dribles em zigue-zague em altíssima velocidade',v:1.35,a:1.4,zz:260,t:3,cd:14},{n:'Passe de Precisão',d:'Dá o passe com efeito para o companheiro mais livre, na frente dele',ap:1,cv:1.6,p:1.2,t:2.5,cd:16}]},
+{n:'Bachira Meguru',b:{control:10},s:{n:'Drible Elástico e Imprevisível',d:'Gingado solto: muda de direção e de ritmo de forma brusca',v:1.25,a:1.3,zz:200,rit:1,t:2.5,cd:11},ps:{n:'Futebol Monstro',d:'Joga guiado pela intuição, sempre mais rápido',a:1.15,v:1.08},aw:[{n:'Ginga x Monstro',d:'Ginga brasileira com instinto selvagem: dribles em zigue-zague em altíssima velocidade',v:1.35,a:1.4,zz:260,rit:1.4,t:3,cd:14},{n:'Passe de Precisão',d:'Dá o passe com efeito para o companheiro mais livre, na frente dele',ap:1,cv:1.6,p:1.2,t:2.5,cd:16}]},
 {n:'Chigiri Hyoma',b:{speed:8,accel:4},s:{n:'Pantera Vermelha',d:'Velocidade explosiva: arranca e corre mais que qualquer marcador',v:1.5,a:1.6,t:2.5,cd:12},ps:{n:'Drible Sem Desacelerar',d:'Toques longos à frente e corre para alcançar a bola',v:1.1,a:1.15},aw:[{n:'44° Panther Snipe',d:'Corta para o meio e bate colocado, com curva, no ângulo oposto ao goleiro',ct:300,cv:1.6,p:1.6,aim:1,fk:1,fr:.6,t:2.2,cd:15},{n:'Furtividade e Rastreamento',d:'Volta rápido na defesa e rouba a bola de quem estiver com ela',v:1.3,sl:70,st:.3,sr:90,t:2.5,cd:14}]},
 {n:'Rin Itoshi',bst:1,b:{finishing:10,speed:4},s:{n:'Precisão Absoluta de Chute',d:'Chute curvo milimétrico de longa distância, no canto',cv:2.4,p:1.2,aim:1,fk:1,fr:.8,t:3,cd:10},ps:{n:'Percepção Espacial',d:'Lê o campo inteiro, sempre um passo à frente',a:1.15,p:1.05},aw:[{n:'Controle de Marionetes',d:'Manipula a marcação: atordoa os rivais por perto e ganha ritmo',st:.55,sr:130,v:1.15,t:3,cd:14},{n:'Estado Destruidor',d:'Transe: destrói cada rival com a força dele mesmo e finaliza com violência',p:1.5,v:1.4,a:1.3,st:.35,sr:90,fk:1,fr:.6,t:3.5,cd:16}],sc:{n:'Instinto de Destruição',d:'Despertar secreto: Rin vira um monstro que devora a melhor arma do rival',v:1.3,a:1.4,p:1.5,dur:22}},
 {n:'Kunigami Rensuke',b:{strength:10,finishing:4},s:{n:'Canhão de Esquerda',d:'Chute de perna esquerda de potência destrutiva, de primeira',p:1.6,fk:1,fr:.55,t:2.5,cd:12},ps:{n:'Força Física Bruta',d:'Vence disputas corpo a corpo e resiste a empurrões',p:1.12,a:1.05},aw:[{n:'Ambidestria',d:'Chuta com as duas pernas, com força e precisão no canto',p:1.3,a:1.2,aim:1,fk:1,fr:.55,t:3,cd:15},{n:'Canhão Carregado',d:'Chute ainda mais violento de muito longe, atordoa quem estiver perto',p:1.9,st:.3,sr:90,fk:1,fr:.85,t:3,cd:16}]},
-{n:'Barou Shōei',b:{finishing:8,strength:4},s:{n:'Zona do Rei',d:'Chute potente de até 28 metros do gol',p:1.5,fk:1,fr:.32,t:3,cd:11},ps:{n:'Físico Avassalador',d:'Empurra defensores e segura a bola cercado',p:1.15,a:1.1},aw:[{n:'Chop Dribble',d:'Cortes secos e violentos em alta velocidade, atordoando quem chega perto',v:1.5,a:1.4,zz:300,st:.3,sr:90,t:2,cd:14},{n:'Olho de Predador',d:'Foca no goleiro e chuta fortíssimo no canto no instante da distração',p:1.8,aim:1,fk:1,fr:.55,t:3,cd:16}]},
+{n:'Barou Shōei',b:{finishing:8,strength:4},s:{n:'Zona do Rei',d:'Chute potente de até 28 metros do gol',p:1.5,fk:1,fr:.42,t:3,cd:11},ps:{n:'Físico Avassalador',d:'Empurra defensores e segura a bola cercado',p:1.15,a:1.1,push:1},aw:[{n:'Chop Dribble',d:'Cortes secos e violentos em alta velocidade, atordoando quem chega perto',v:1.5,a:1.4,zz:300,st:.3,sr:90,chop:1,t:2,cd:14},{n:'Olho de Predador',d:'Foca no goleiro e chuta fortíssimo no canto no instante da distração',p:1.8,aim:1,fk:1,fr:.55,dis:1,t:3,cd:16}]},
 {n:'Reo Mikage',b:{passing:8,control:4},s:{n:'Camaleão',d:'Copia a habilidade ativa do jogador mais próximo (ou a inicial dele)',cp:1,cd:12},ps:{n:'Visão Tática e Passe Completo',d:'Lê o jogo e distribui passes curtos e longos',a:1.15},aw:[{n:'Metavisão',d:'Antecipa jogadas e corre para os espaços livres',a:1.4,v:1.2,ch:1,t:3,cd:14},{n:'Passe Completo',d:'Passe perfeito com efeito e aceleração para o melhor companheiro',ap:1,cv:2,a:1.3,t:2.5,cd:16}]}];
 const FXB={'Isagi Yoichi':['flash','scan','twin'],'Nagi Seishirō':['vortex','ring','ghost'],'Bachira Meguru':['elastic','ginga','pass'],'Chigiri Hyoma':['speed','arc','shadow'],'Rin Itoshi':['reticle','strings','rage'],'Kunigami Rensuke':['shock','crossfire','charge'],'Barou Shōei':['zone','slash','predator'],'Reo Mikage':['chameleon','radar','lob']};
 BLR.forEach(c=>{const f=FXB[c.n];c.s.fx=f[0];c.aw[0].fx=f[1];c.aw[1].fx=f[2]});
@@ -2108,16 +2108,39 @@ function blBeast(g,p,t){ // aura turquesa com um monstro totalmente distorcido e
 function blSecShoot(q){ // precisão absurda: finaliza de primeira no canto oposto ao do goleiro, com a curva animalesca
  const gx=q.t?0:PW,cy=PH/2,gk=players.find(o=>o.t!==q.t&&o.gk&&!o.off),ty=cy+((gk&&gk.y>cy)?-1:1)*GH*.36;let dx=gx-q.x,dy=ty-q.y;const l=Math.hypot(dx,dy)||1,pw=shotPw(q,1)*.9*blMl(q,'p');
  ball.vx=dx/l*pw;ball.vy=dy/l*pw;ball.sp=0;ball.bs=0;beastShot(q);q.cool=.28;kgap=.18;q.flash=.15;lastT=q.t;lastP=q;burst(ball.x,ball.y,12,BSC,200,.5);sfx('kick',pw)}
+const SECCTR={speed:'Sprint de bloqueio',accel:'Reação antes do arranque',strength:'Corpo a corpo blindado',finishing:'Cobre o canto do chute',control:'Rouba com alcance extra',passing:'Corta as linhas de passe'};
 function blSecStart(q){
  const sc=q.bl.sc;q.blSec=sc.dur;q.secOn=true;q.blSecN++;q.blSecP=0;q.secStl=0;q.secJt=0;q.secDuel=5;
  let key='speed',bv=-1;for(const k of['speed','accel','strength','finishing','control','passing']){const v=myPlayer.a[k]||0;if(v>bv){bv=v;key=k}} // adaptação: acha a melhor arma do rival
+ q.secCtr=key;
  q.secA0=Object.assign({},q.a);q.secM0=q.m;q.secAd=key;q.a[key]=Math.min(99,Math.max(q.a[key]||0,bv+6));if(key==='strength')q.m=.8+q.a.strength/99*.8;
  q.blLab={s:'DESPERTAR SECRETO · '+sc.n,ic:'👁',c:BSC,t:3.8,m:3.8,big:true};
  shake=Math.max(shake,18);ring(q.x,q.y,BSC,260,.9);ring(q.x,q.y,'#ffffff',150,.6);burst(q.x,q.y,56,BSC,420,1.1);burst(q.x,q.y,28,BSC2,260,.8);
- popup(q.x,q.y-34,'ADAPTAÇÃO: '+BSN[key].toUpperCase());toast('👁 '+q.bl.n+' despertou o instinto de destruição!');
+ popup(q.x,q.y-34,'ADAPTAÇÃO: '+BSN[key].toUpperCase());popup(q.x,q.y-12,SECCTR[key]);toast('👁 '+q.bl.n+' despertou o instinto de destruição!');
  try{tone(80,.7,'sawtooth',.2);tone(160,.5,'square',.09,.06);tone(55,.9,'triangle',.18,.12)}catch(e){}}
 function blSecEnd(q){
  if(q.secA0){Object.assign(q.a,q.secA0);q.m=q.secM0}q.secOn=false;q.blSec=0;ring(q.x,q.y,BSC2,120,.5);burst(q.x,q.y,18,BSC2,180,.6)}
+const SECKEYS=['speed','accel','strength','finishing','control','passing'];
+function secHumilha(q,o){ // Dribles destrutivos: pega a MELHOR habilidade do marcador e a usa contra ele
+ const k=SECKEYS.reduce((b,c)=>((o.a&&(o.a[c]||0))>(o.a[b]||0)?c:b),'speed');
+ const sp=Math.hypot(q.vx,q.vy),ux=sp>20?q.vx/sp:q.fx,uy=sp>20?q.vy/sp:q.fy,dx=o.x-q.x,dy=o.y-q.y,dd=Math.hypot(dx,dy)||1,nx=dx/dd,ny=dy/dd;
+ const sd=(-uy*nx+ux*ny)>=0?1:-1; // lado livre: o lado oposto ao marcador
+ o.secHit=1.1;o.stun=Math.max(o.stun||0,.6);
+ let txt='';
+ if(k==='speed'){ // velocidade: arranca e deixa o marcador para trás
+  q.vx+=ux*620;q.vy+=uy*620;o.vx*=.25;o.vy*=.25;o.stun=Math.max(o.stun,.8);txt='MAIS RÁPIDO QUE VOCÊ'}
+ else if(k==='accel'){ // aceleração: freia de repente e explode para o lado livre
+  q.vx*=.15;q.vy*=.15;q.vx+=-uy*sd*520;q.vy+=ux*sd*520;o.vx*=.2;o.vy*=.2;o.stun=Math.max(o.stun,.7);txt='ARRANQUE QUE VOCÊ NÃO ACOMPANHA'}
+ else if(k==='strength'){ // força: usa o empurrão do próprio marcador para jogá-lo para fora
+  o.vx-=nx*420;o.vy-=ny*420;q.vx+=ux*220;q.vy+=uy*220;o.stun=Math.max(o.stun,.9);txt='SUA FORÇA TE DERRUBA'}
+ else if(k==='finishing'){ // finalização: finta de chute, ele se engaja e você sai do outro lado
+  q.vx+=-uy*sd*460;q.vy+=ux*sd*460;o.vx+=-uy*-sd*180;o.vy+=ux*-sd*180;o.stun=Math.max(o.stun,.5);txt='FINTA DE CHUTE, VOCÊ CAIU'}
+ else if(k==='control'){ // controle: caneta, a bola passa por entre as pernas dele
+  ball.x=o.x+ux*(o.r+ball.r+6);ball.y=o.y+uy*(o.r+ball.r+6);ball.vx=ux*sp*.9;ball.vy=uy*sp*.9;q.vx+=ux*200;q.vy+=uy*200;txt='CANETA: A BOLA PASSOU POR VOCÊ'}
+ else{ // passe: a bola rola para o lado livre e você contorna o marcador
+  ball.vx=-uy*sd*420+ux*sp*.4;ball.vy=ux*sd*420+uy*sp*.4;q.vx+=ux*260;q.vy+=uy*260;o.vx*=.5;o.vy*=.5;txt='PASSE DE LETRA SEM VOCÊ TOCAR'}
+ ring(o.x,o.y,BSC,50,.3);burst(o.x,o.y,14,BSC,200,.5);
+ popup(q.x,q.y-24,'SUA '+BSN[k].toUpperCase()+' CONTRA VOCÊ');popup(q.x,q.y-4,txt)}
 function blSecTick(q,d){
  if(q.t!==1||!q.blAwk)return;
  if(!(q.blSec>0)){ // gatilho secreto: pressão acumulada (perdendo, sofrendo gol) depois de despertar
@@ -2129,20 +2152,39 @@ function blSecTick(q,d){
  if(q.stun>0)return;
  const gx=q.t?0:PW,tg=carrier&&carrier.t!==q.t&&!carrier.gk?carrier:(q.secDuel>0&&dist(q,myPlayer)<650?myPlayer:null);q.secDuel-=d;
  q.secJt-=d;if(q.secJt<=0){q.secJt=.22+Math.random()*.3;const sp=Math.hypot(q.vx,q.vy),ux=sp>20?q.vx/sp:q.fx,uy=sp>20?q.vy/sp:q.fy,sd=Math.random()<.5?-1:1,f=200+Math.random()*160;q.vx+=-uy*sd*f;q.vy+=ux*sd*f} // 1. instinto: movimento imprevisível
- if(tg){const L=Math.min(.5,dist(q,tg)/700),tx=tg.x+(tg.vx||0)*L,ty=tg.y+(tg.vy||0)*L,dd=Math.hypot(tx-q.x,ty-q.y);if(dd>1&&dd<640){q.vx+=(tx-q.x)/dd*900*d;q.vy+=(ty-q.y)/dd*900*d}} // 2. leitura: antecipa o rival e a disputa
- q.secStl-=d;if(q.secStl<=0&&carrier&&carrier.t!==q.t&&!carrier.gk&&dist(q,carrier)<q.r+carrier.r+24){q.secStl=.8;carrier.stun=Math.max(carrier.stun||0,.55);const fx=q.fx||1,fy=q.fy||0;ball.x=q.x+fx*(q.r+ball.r+1);ball.y=q.y+fy*(q.r+ball.r+1);ball.vx=q.vx;ball.vy=q.vy;burst(ball.x,ball.y,14,BSC,220,.5);popup(q.x,q.y,'Devorou!')}
+ if(tg){const L=Math.min(.5,dist(q,tg)/700),tx=tg.x+(tg.vx||0)*L,ty=tg.y+(tg.vy||0)*L,dd=Math.hypot(tx-q.x,ty-q.y);if(dd>1&&dd<640){q.vx+=(tx-q.x)/dd*900*d;q.vy+=(ty-q.y)/dd*900*d}}else if(!carrier){const bx=ball.x+ball.vx*.4,by=ball.y+ball.vy*.4,db=Math.hypot(bx-q.x,by-q.y);if(db>1&&db<640){q.vx+=(bx-q.x)/db*900*d;q.vy+=(by-q.y)/db*900*d}} // 2. leitura: antecipa o rival e a bola solta
+ q.secStl-=d;if(q.secStl<=0&&carrier&&carrier.t!==q.t&&!carrier.gk&&dist(q,carrier)<q.r+carrier.r+24+((q.secCtr==='control'||q.secCtr==='passing')?30:0)){q.secStl=.8;carrier.stun=Math.max(carrier.stun||0,.55);const fx=q.fx||1,fy=q.fy||0;ball.x=q.x+fx*(q.r+ball.r+1);ball.y=q.y+fy*(q.r+ball.r+1);ball.vx=q.vx;ball.vy=q.vy;burst(ball.x,ball.y,14,BSC,220,.5);popup(q.x,q.y,'Devorou!')}
  if(carrier===q){for(const o of players){if(o.t===q.t||o.gk||o.off||o.stun>0||o.secHit>0)continue;const dd=dist(o,q);if(dd<115){ // 3. drible destrutivo: usa o próprio equilíbrio do marcador contra ele
    o.secHit=1.1;o.x+=(o.vx||0)*.07;o.y+=(o.vy||0)*.07;o.stun=.6;const nx=(o.x-q.x)/(dd||1),ny=(o.y-q.y)/(dd||1),sd=Math.random()<.5?-1:1;q.vx+=(q.t?-1:1)*330-ny*sd*300;q.vy+=nx*sd*300;burst(o.x,o.y,12,BSC,200,.5);ring(o.x,o.y,BSC2,60,.35)}}
-  if(q.cool<=0&&kgap<=0&&Math.hypot(gx-q.x,PH/2-q.y)<PW*.36&&dist(q,ball)<=reach(q)+2)blSecShoot(q)} // 4. precisão absurda
+  if(carrier===q){q.secFt=(q.secFt||0)-d;if(q.secFt<=0){const o=players.filter(o=>o.t!==q.t&&!o.gk&&!o.off&&!(o.secHit>0)&&dist(o,q)<150).sort((a,b)=>dist(a,q)-dist(b,q))[0];if(o){q.secFt=.9;secHumilha(q,o)}}}
+  const pressed=players.some(o=>o.t!==q.t&&!o.gk&&!o.off&&dist(o,q)<90);
+  if(q.cool<=0&&kgap<=0&&Math.hypot(gx-q.x,PH/2-q.y)<PW*(pressed?.46:.36)&&dist(q,ball)<=reach(q)+2)blSecShoot(q)} // 4. precisão absurda
 }
+function passeMate(p){ // Passe de Precisão: o companheiro mais livre à frente, com linha de passe limpa
+ const t=p.t,d=t?-1:1;let best=null,bs=-1e9;
+ for(const m of players){if(m===p||m.t!==t||m.gk||m.off)continue;const ahead=(m.x-p.x)*d;if(ahead<-20)continue;
+  if(lane(p.x,p.y,m.x,m.y,t,18))continue;
+  const s=Math.min(free(m.x,m.y,t),260)+Math.min(ahead,400)*.25-Math.hypot(m.x-p.x,m.y-p.y)*.08;
+  if(s>bs){bs=s;best=m}}
+ return best}
+function blDistr(p){ // Olho de Predador: só solta o chute quando o goleiro sai da posição (distração)
+ const gk=players.find(o=>o.t!==p.t&&o.gk&&!o.off);if(!gk)return true;
+ return Math.abs(gk.y-PH/2)>GH*.28||Math.hypot(gk.vx,gk.vy)>70}
+function blPhysTick(p,d){ // Físico Avassalador: com a bola, empurra quem chega perto e não se deixa derrubar
+ if(carrier!==p||p.gk)return;let cerc=0;
+ for(const o of players){if(o.t===p.t||o.gk||o.off)continue;const dd=dist(o,p);
+  if(dd<95&&dd>1){cerc++;const nx=(o.x-p.x)/dd,ny=(o.y-p.y)/dd;o.vx+=nx*1400*d;o.vy+=ny*1400*d;if(dd<p.r+o.r+8)o.stun=Math.max(o.stun||0,.25)}}
+ if(cerc){p.stun=0;const k=Math.pow(.97,d*60);p.vx*=k;p.vy*=k}}
 function blFxTick(p,d){const X=p.blX;if(!X)return;
  if(X.mg){const dd=dist(p,ball);if(dd<X.mg&&dd>p.r){const k=(1-dd/X.mg)*1100*d;ball.vx+=(p.x-ball.x)/dd*k;ball.vy+=(p.y-ball.y)/dd*k}} // buraco negro: puxa a bola
  if(X.ch&&carrier!==p){const tx=ball.x+ball.vx*.35,ty=ball.y+ball.vy*.35,dd=Math.hypot(tx-p.x,ty-p.y);if(dd<560&&dd>1){p.vx+=(tx-p.x)/dd*560*d;p.vy+=(ty-p.y)/dd*560*d}} // metavisão: antecipa a bola
  if(X.zz){p.zzT=(p.zzT||0)-d;if(p.zzT<=0){p.zzT=.26+Math.random()*.12;p.zzD=(p.zzD||1)*-1;const sp=Math.hypot(p.vx,p.vy),ux=sp>20?p.vx/sp:p.fx,uy=sp>20?p.vy/sp:p.fy;p.vx+=-uy*p.zzD*X.zz;p.vy+=ux*p.zzD*X.zz}} // ginga: zigue-zague
+ if(X.chop){p.chT=(p.chT||0)-d;if(p.chT<=0){p.chT=.32;for(const o of players){if(o.t===p.t||o.gk||o.off)continue;if(dist(o,p)<(X.sr||90)){o.stun=Math.max(o.stun||0,X.st||.3);o.vx*=.4;o.vy*=.4;burst(o.x,o.y,6,'#ffffff',160,.35)}}if(carrier===p){const a=Math.random()*6.28,k=260*.5;ball.vx+=Math.cos(a)*k;ball.vy+=Math.sin(a)*k}}} // cortes secos: atordoa quem chega perto a cada golpe
+ if(X.rit){p.ritT=(p.ritT||0)-d;if(p.ritT<=0){p.ritT=.45+Math.random()*.35;p.ritB=!p.ritB;const sp=Math.hypot(p.vx,p.vy),ux=sp>20?p.vx/sp:p.fx,uy=sp>20?p.vy/sp:p.fy;if(p.ritB){p.vx+=ux*X.rit*320;p.vy+=uy*X.rit*320}else{p.vx*=.55;p.vy*=.55}}} // ritmo: arranque seco e parada brusca
  if(p.stl>0)p.stl-=d;
  if(X.sl&&!(p.stl>0)&&carrier&&carrier.t!==p.t&&!carrier.gk&&dist(p,carrier)<X.sl+p.r){p.stl=.9;carrier.stun=Math.max(carrier.stun||0,.55);const fx=p.fx||1,fy=p.fy||0;ball.x=p.x+fx*(p.r+ball.r+1);ball.y=p.y+fy*(p.r+ball.r+1);ball.vx=p.vx;ball.vy=p.vy;burst(ball.x,ball.y,12,'#ffffff',200,.5);popup(p.x,p.y,'Roubou!')} // rouba a bola
- if(X.fk&&p.cool<=0&&kgap<=0&&dist(p,ball)<=reach(p)+2){const gx=p.t?0:PW;if(Math.hypot(gx-p.x,PH/2-p.y)<PW*(X.fr||.5))blShoot(p,X)} // finaliza de primeira
- if(X.ap&&carrier===p&&p.cool<=0&&kgap<=0){const bm=bestMate(p);if(bm&&bm.m&&passTo(p,bm.m)){X.ap=0;if(X.cv)ball.sp=Math.max(-1.3,Math.min(1.3,(X.cv-1)*.9*(p.t?-1:1)))}} // passe com efeito para o melhor companheiro
+ if(X.fk&&p.cool<=0&&kgap<=0&&dist(p,ball)<=reach(p)+2){const gx=p.t?0:PW;if(Math.hypot(gx-p.x,PH/2-p.y)<PW*(X.fr||.5)&&(!X.dis||blDistr(p)))blShoot(p,X)} // finaliza de primeira
+ if(X.ap&&carrier===p&&p.cool<=0&&kgap<=0){const bm=passeMate(p);if(bm&&passTo(p,bm)){X.ap=0;if(X.cv)ball.sp=Math.max(-1.3,Math.min(1.3,(X.cv-1)*.9*(p.t?-1:1)))}} // passe com efeito para o melhor companheiro
 }
 function blUse(p,slot){if(!p||!p.bl||phase!=='play'||blCineT>0)return false;const e0=slot===0?p.bl.s:(p.blAw&&p.blAw[slot-1]);if(!e0)return false;p.blCD=p.blCD||[0,0,0];if(p.blCD[slot]>0)return false;
  let eff=e0;if(e0.cp){let best=null,bd=1e9;for(const q of players){if(q===p||!q.blX||!(q.blXT>0))continue;const dd=dist(p,q);if(dd<bd){bd=dd;best=q}}if(best)eff=Object.assign({},best.blX,{t:Math.max(2,Math.min(best.blXT,3))});else{let b2=null;bd=1e9;for(const q of players){if(q===p||!q.bl||q.gk)continue;const dd=dist(p,q);if(dd<bd&&dd<650){bd=dd;b2=q}}if(!b2)return false;eff=Object.assign({},b2.bl.s,{cp:0})}}
@@ -2156,6 +2198,7 @@ function blTick(d){const UI=blM&&!online;const HU=UI&&!!myPlayer.bl;$('bldp').hi
  if(phase==='play'&&!frozen){for(const p of players){if(!p.bl)continue;if(p.blLab&&p.blLab.t>0)p.blLab.t-=d;if(p.blXT>0)p.blXT-=d;if(p.blSec>0)p.blSec-=d;if(p.blCD)for(let k=0;k<3;k++)if(p.blCD[k]>0)p.blCD[k]-=d}
   for(const p of players)if(p.bl&&p.blXT>0&&p.blX)blFxTick(p,d);
   for(const q of players)if(q.bl&&q.bl.sc)blSecTick(q,d);
+  for(const q of players)if(q.bl&&q.blPas&&q.blPas.push)blPhysTick(q,d);
   const ci=blCh(),dp=blDp(ci);
   if(!dp.aw&&myPlayer.bl){dp.d=Math.min(100,dp.d+d*.8);if(score[0]>blLast[0])dp.d=Math.min(100,dp.d+25*(score[0]-blLast[0]));if(dp.d>=100){dp.aw=true;dp.d=100;myPlayer.blPas=myPlayer.bl.ps;myPlayer.blAw=myPlayer.bl.aw;myPlayer.blAwk=true;burst(myPlayer.x,myPlayer.y,40,BLC[blCh()][1],320,.9);blCine('DESPERTAR',myPlayer.bl.ps.n,myPlayer.bl.n,myPlayer,true);toast('🔥 '+myPlayer.bl.n+' despertou!');save()}}
   for(const q of players){if(q.t!==1||!q.bl||q.blAwk)continue;q.blD=(q.blD||0)+d*BLD[blPh-1].aw+(score[0]>blLast[0]?25:0);if(q.blD>=100&&blCineT<=0){q.blAwk=true;q.blPas=q.bl.ps;q.blAw=q.bl.aw;burst(q.x,q.y,40,q.blC[1],320,.9);blCine('DESPERTAR',q.bl.ps.n,q.bl.n,q,true);toast('🔥 '+q.bl.n+' despertou!');break}}
