@@ -1995,19 +1995,19 @@ function blTick(d){const UI=blM&&!online;$('bldp').hidden=!UI;$('blbt').hidden=!
  const frozen=blCineT>0;if(frozen){blCineT-=d;if(blCineT<=0){$('blcine').classList.remove('on');cv.style.transform=''}}
  if(phase==='play'&&!frozen){for(const p of players){if(!p.bl)continue;if(p.blXT>0)p.blXT-=d;if(p.blCD)for(let k=0;k<3;k++)if(p.blCD[k]>0)p.blCD[k]-=d}
   const ci=blCh(),dp=blDp(ci);
-  if(!dp.aw){dp.d=Math.min(100,dp.d+d*.45);if(score[0]>blLast[0])dp.d=Math.min(100,dp.d+18*(score[0]-blLast[0]));if(dp.d>=100){dp.aw=true;dp.d=100;myPlayer.blPas=myPlayer.bl.ps;myPlayer.blAw=myPlayer.bl.aw;myPlayer.blAwk=true;burst(myPlayer.x,myPlayer.y,40,BLC[blCh()][1],320,.9);blCine('DESPERTAR',myPlayer.bl.ps.n,myPlayer.bl.n,myPlayer,true);toast('🔥 '+myPlayer.bl.n+' despertou!');save()}}
-  for(const q of players)if(q.t===1&&q.bl&&!(q.blXT>0)&&(q.blCD?q.blCD[0]:0)<=0&&Math.random()<d*.1&&dist(q,ball)<300)blUse(q,0);
+  if(!dp.aw){dp.d=Math.min(100,dp.d+d*.8);if(score[0]>blLast[0])dp.d=Math.min(100,dp.d+25*(score[0]-blLast[0]));if(dp.d>=100){dp.aw=true;dp.d=100;myPlayer.blPas=myPlayer.bl.ps;myPlayer.blAw=myPlayer.bl.aw;myPlayer.blAwk=true;burst(myPlayer.x,myPlayer.y,40,BLC[blCh()][1],320,.9);blCine('DESPERTAR',myPlayer.bl.ps.n,myPlayer.bl.n,myPlayer,true);toast('🔥 '+myPlayer.bl.n+' despertou!');save()}}
+  if(state==='play')for(const q of players)if(q.t===1&&q.bl&&q===carrier&&!(q.blXT>0)&&(q.blCD?q.blCD[0]:0)<=0&&Math.random()<d*.05)blUse(q,0);
  }
  blLast=[score[0],score[1]];
  blUi+=d;if(blUi>.2){blUi=0;const dp=blDp(blCh());$('bldpf').style.width=dp.d+'%';{const C=BLC[blCh()];$('bldpf').style.background='linear-gradient(90deg,'+C[0]+','+C[1]+')'}$('bldpt').textContent=dp.aw?'★ DESPERTOU':'Despertar '+Math.floor(dp.d)+'%';
-  const sl=[myPlayer.bl.s,...(myPlayer.blAw||[])];for(let k=0;k<3;k++){const b=$('bl'+k),e=sl[k];b.hidden=!e;if(e){const c=(myPlayer.blCD&&myPlayer.blCD[k])||0;b.textContent=['E','R','F'][k]+' · '+e.n+(c>0?' ('+Math.ceil(c)+')':'')}}}
+  const sl=[myPlayer.bl.s,...(myPlayer.blAw||[])];for(let k=0;k<3;k++){const b=$('bl'+k),e=sl[k];b.hidden=false;b.disabled=!e;if(e){const c=(myPlayer.blCD&&myPlayer.blCD[k])||0;b.textContent=['E','R','F'][k]+' · '+e.n+(c>0?' ('+Math.ceil(c)+')':'')}else b.textContent=['E','R','F'][k]+' · 🔒 Despertar'}}
 }
 function blRender(){const el=$('blkl'),ch=$('blchr');ch.innerHTML='';const ci=blCh();BLR.forEach((c,i)=>{const b=document.createElement('button');b.className=i===ci?'cta':'ghost';b.type='button';b.textContent=c.n.split(' ')[0];b.title=c.s.n+' — '+c.s.d;b.onclick=()=>{blS().me=i;save();blRender()};ch.appendChild(b)});
  el.innerHTML='';BLP.forEach((F,i)=>{const f=i+1,lk=f>blS().ph;const b=document.createElement('button');b.className='ghost';b.type='button';b.disabled=lk;b.textContent=(lk?'🔒 ':'▶ ')+F.n+' · '+F.bots.map(x=>x.n.split(' ')[0]).join(', ');b.title=F.bots.map(x=>x.n+': '+x.s.n+' ('+x.s.d+')').join(' | ');b.onclick=()=>blStart(f);el.appendChild(b)})}
 function blStart(f){blRun=true;blPh=f;show('blk',false);startMatch()}
 function blApply(){const F=BLP[blPh-1],bots=players.filter(z=>z.t===1),ci=blCh(),me=BLR[ci],dp=blDp(ci);blLast=[score[0],score[1]];
  F.bots.forEach((c,k)=>{const q=bots[k];if(!q)return;const a=base(F.lv,F.lv,F.lv);for(const key in c.b)a[key]=Math.min(99,(a[key]||0)+c.b[key]);q.a=a;q.m=q.g0?q.m:.8+a.strength/99*.8;q.bl=c;q.blC=BLC[BLR.indexOf(c)];q.blAwk=false;q.blCD=[0,0,0];q.blX=null;q.blXT=0;q.blPas=null;q.blAw=null;q.nm=c.n;popup(q.x,q.y,c.s.n.toUpperCase());burst(q.x,q.y,10,'#4fc3ff',200,.5)});
- myPlayer.bl=me;myPlayer.blC=BLC[ci];myPlayer.blAwk=dp.aw;myPlayer.nm=me.n;myPlayer.blCD=[0,0,0];myPlayer.blX=null;myPlayer.blXT=0;myPlayer.blPas=dp.aw?me.ps:null;myPlayer.blAw=dp.aw?me.aw:null;
+ myPlayer.bl=me;myPlayer.blC=BLC[ci];myPlayer.blAwk=dp.aw;myPlayer.blCD=[0,0,0];myPlayer.blX=null;myPlayer.blXT=0;myPlayer.blPas=dp.aw?me.ps:null;myPlayer.blAw=dp.aw?me.aw:null;
  toast('🔵 '+F.n)}
 $('blb').addEventListener('click',()=>{blRender();show('mn',false);show('blk',true)});
 $('blkc').addEventListener('click',()=>{show('blk',false);show('mn',true)});
@@ -2815,7 +2815,7 @@ applyUI();syncEd();
 resize();applyProfile();applyDifficulty();reset(true);showMenu();requestAnimationFrame(loop);setTimeout(hashJoin,800);addEventListener('hashchange',hashJoin);
 
 /* ponte para o modo Futebol de Areia 3D (módulo separado) */
-HC.register('game',{get phase(){return phase},set phase(v){phase=v},get online(){return online},get bch(){return bch},showMenu,startMatch,pauseGame,resume,show:(i,on)=>show(i,on),get cfg(){return cfg},get ST(){return ST},get LB(){return LB},get OM(){return OM},save:()=>save(),toast:t=>toast(t)});
+HC.register('game',{get blState(){return {blM,blCineT,blPh,me:myPlayer,players,ball,phase,clock,score,state,introT}},get phase(){return phase},set phase(v){phase=v},get online(){return online},get bch(){return bch},showMenu,startMatch,pauseGame,resume,show:(i,on)=>show(i,on),get cfg(){return cfg},get ST(){return ST},get LB(){return LB},get OM(){return OM},save:()=>save(),toast:t=>toast(t)});
 })();
 if("serviceWorker" in navigator){const had=!!navigator.serviceWorker.controller;
  navigator.serviceWorker.addEventListener("controllerchange",()=>{if(had&&!document.getElementById("mn").hidden)location.reload()});
