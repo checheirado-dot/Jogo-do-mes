@@ -2031,6 +2031,7 @@ function blTick(d){const UI=blM&&!online;const HU=UI&&!!myPlayer.bl;$('bldp').hi
  if(phase==='play'&&!frozen){for(const p of players){if(!p.bl)continue;if(p.blXT>0)p.blXT-=d;if(p.blCD)for(let k=0;k<3;k++)if(p.blCD[k]>0)p.blCD[k]-=d}
   const ci=blCh(),dp=blDp(ci);
   if(!dp.aw&&myPlayer.bl){dp.d=Math.min(100,dp.d+d*.8);if(score[0]>blLast[0])dp.d=Math.min(100,dp.d+25*(score[0]-blLast[0]));if(dp.d>=100){dp.aw=true;dp.d=100;myPlayer.blPas=myPlayer.bl.ps;myPlayer.blAw=myPlayer.bl.aw;myPlayer.blAwk=true;burst(myPlayer.x,myPlayer.y,40,BLC[blCh()][1],320,.9);blCine('DESPERTAR',myPlayer.bl.ps.n,myPlayer.bl.n,myPlayer,true);toast('🔥 '+myPlayer.bl.n+' despertou!');save()}}
+  for(const q of players){if(q.t!==1||!q.bl||q.blAwk)continue;q.blD=(q.blD||0)+d*.8+(score[0]>blLast[0]?25:0);if(q.blD>=100&&blCineT<=0){q.blAwk=true;q.blPas=q.bl.ps;q.blAw=q.bl.aw;burst(q.x,q.y,40,q.blC[1],320,.9);blCine('DESPERTAR',q.bl.ps.n,q.bl.n,q,true);toast('🔥 '+q.bl.n+' despertou!');break}}
   if(state==='play')for(const q of players)if(q.t===1&&q.bl&&q===carrier&&!(q.blXT>0)&&(q.blCD?q.blCD[0]:0)<=0&&Math.random()<d*.05)blUse(q,Math.random()<.55?0:(Math.random()<.5?1:2));
  }
  blLast=[score[0],score[1]];
@@ -2041,7 +2042,7 @@ function blRender(){const el=$('blkl'),ch=$('blchr');ch.innerHTML='';
  el.innerHTML='';BLP.forEach((F,i)=>{const f=i+1,lk=f>blS().ph;const b=document.createElement('button');b.className='ghost';b.type='button';b.disabled=lk;b.textContent=(lk?'🔒 ':'▶ ')+F.n+' · '+F.bots.map(x=>x.n.split(' ')[0]).join(', ');b.title=F.bots.map(x=>x.n+': '+x.s.n+' ('+x.s.d+')').join(' | ');b.onclick=()=>blStart(f);el.appendChild(b)})}
 function blStart(f){blRun=true;blPh=f;show('blk',false);startMatch()}
 function blApply(){const F=BLP[blPh-1],bots=players.filter(z=>z.t===1),ci=blCh(),me=BLR[ci],dp=blDp(ci);blLast=[score[0],score[1]];
- F.bots.forEach((c,k)=>{const q=bots[k];if(!q)return;const a=base(F.lv,F.lv,F.lv);for(const key in c.b)a[key]=Math.min(99,(a[key]||0)+c.b[key]);q.a=a;q.m=q.g0?q.m:.8+a.strength/99*.8;q.bl=c;q.blC=BLC[BLR.indexOf(c)];q.blAwk=false;q.blCD=[0,0,0];q.blX=null;q.blXT=0;q.blPas=c.ps;q.blAw=c.aw;q.nm=c.n;popup(q.x,q.y,c.s.n.toUpperCase());burst(q.x,q.y,10,'#4fc3ff',200,.5)});
+ F.bots.forEach((c,k)=>{const q=bots[k];if(!q)return;const a=base(F.lv,F.lv,F.lv);for(const key in c.b)a[key]=Math.min(99,(a[key]||0)+c.b[key]);q.a=a;q.m=q.g0?q.m:.8+a.strength/99*.8;q.bl=c;q.blC=BLC[BLR.indexOf(c)];q.blAwk=false;q.blCD=[0,0,0];q.blX=null;q.blXT=0;q.blPas=null;q.blAw=null;q.blD=Math.random()*40;q.nm=c.n;popup(q.x,q.y,c.s.n.toUpperCase());burst(q.x,q.y,10,'#4fc3ff',200,.5)});
  myPlayer.bl=null;myPlayer.blC=null;myPlayer.blAwk=false;myPlayer.blCD=[0,0,0];myPlayer.blX=null;myPlayer.blXT=0;myPlayer.blPas=null;myPlayer.blAw=null;
  toast('🔵 '+F.n)}
 $('blb').addEventListener('click',()=>{blRender();show('mn',false);show('blk',true)});
