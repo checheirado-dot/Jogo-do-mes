@@ -2011,10 +2011,14 @@ function blFx(p,g){if(!blM||!p.blAwk||!p.bl)return;const idx=BLR.indexOf(p.bl),t
    blSuit(g,SU[k],0,1,4.2,SC[k]);g.restore()}
  }else if(idx===6){ // Barou: vira um leão vermelho transparente ao andar
   if(sp>60){g.globalAlpha=.3+.1*Math.sin(t*6);blLion(g,p.x,p.y-4,18)}
- }else if(idx===8){ // Sae: sequência de Fibonacci girando em magenta
-  const F=[1,1,2,3,5,8,13,21,34];g.font='bold 13px sans-serif';g.textAlign='center';g.textBaseline='middle';
-  for(let k=0;k<F.length;k++){const ph=(t*.5+k/F.length)%1,a=k*2.4+t*.6,r=p.r+14+ph*26;g.globalAlpha=(1-ph)*.9;g.fillStyle=k%2?'#ff2fd0':'#ff9af0';g.shadowColor='#ff2fd0';g.shadowBlur=0;g.fillText(String(F[k]),p.x+Math.cos(a)*r,p.y+Math.sin(a)*r-ph*10)}
-  g.shadowBlur=0;
+ }else if(idx===8){ // Sae: espiral áurea girando, halo rosa e números de Fibonacci subindo (mais forte no despertar secreto)
+  const sec=p.blSec>0&&p.bl.sc&&p.bl.sc.gold,HR=p.r*(sec?5:3.8),S=p.r*(sec?4.2:3.4);
+  const hg=g.createRadialGradient(p.x,p.y,p.r*.6,p.x,p.y,HR);hg.addColorStop(0,'rgba(255,47,208,'+(sec?.42:.3)+')');hg.addColorStop(1,'rgba(255,47,208,0)');g.globalAlpha=1;g.fillStyle=hg;g.beginPath();g.arc(p.x,p.y,HR,0,7);g.fill();
+  g.save();g.translate(p.x,p.y);g.rotate(t*(sec?.9:.55));g.translate(-S/2,-S/GPHI/2);g.globalAlpha=sec?.9:.65;g.strokeStyle=sec?'#ffffff':'#ff6be6';g.lineWidth=1.2;goldSpiral(g,S,sec?9:7);g.restore();
+  g.setLineDash([4,7]);g.lineDashOffset=-t*30;g.strokeStyle='#ff2fd0';g.lineWidth=1.4;g.globalAlpha=.75;g.beginPath();g.arc(p.x,p.y,p.r+9,0,7);g.stroke();g.setLineDash([]);
+  g.font='200 15px ui-monospace,Menlo,Consolas,monospace';g.textAlign='center';g.textBaseline='middle';
+  const NN=sec?11:8;for(let k=0;k<NN;k++){const ph=(t*.35+k/NN)%1,an=k*2.399+t*.7,r=p.r+12+ph*(sec?48:34);g.globalAlpha=Math.sin(ph*Math.PI)*.95;g.fillStyle=k%2?'#ff9af0':'#ffffff';g.fillText(String(FIBN[k%FIBN.length]),p.x+Math.cos(an)*r,p.y+Math.sin(an)*r-ph*14)}
+  g.globalAlpha=1;
  }else if(idx===9){ // Aiku: cobra gigante verde-neon e violeta enrolada no corpo, com a boca aberta para a bola
   const dr=p.t?-1:1,R=p.r+8;
   g.globalAlpha=.3+.08*Math.sin(t*3);g.fillStyle='#9dff00';g.shadowColor='#9dff00';g.shadowBlur=0;g.beginPath();g.arc(p.x,p.y,p.r+22,0,7);g.fill(); // névoa violeta
@@ -2046,8 +2050,8 @@ function blFx(p,g){if(!blM||!p.blAwk||!p.bl)return;const idx=BLR.indexOf(p.bl),t
 const BLA=['🦅','🐱','🐍','🐆','🐺','🦏','🦁','🦎'];
 /* ---------- JAPÃO SUB-20: modo extra, liberado ao vencer a Fase 5. Habilidades provisórias (serão trocadas) ---------- */
 const BLJ=[
- {n:'Itoshi Sae',inf:1,b:{control:10,passing:10,finishing:6,speed:4},s:{n:'Drible Passivo',d:'Espera o defensor dar o primeiro passo e usa o impulso dele para passar limpo',ctr:1,sr:115,v:1.15,t:2.5,cd:11},ps:{n:'Passes Cirúrgicos e Visão',d:'Enxerga linhas de passe invisíveis e coloca a bola exatamente onde o companheiro precisa',always:1,p:1.12,v:1.05},aw:[{n:'Destruir com Beleza',d:'Contra-drible em velocidade máxima: elástico, caneta e corte seco que humilham os marcadores',hum:1,v:1.4,a:1.4,t:3.5,cd:13},{n:'Chute e Passe Perfeitos',d:'Trivela e chute colocado no ângulo, mesmo sob pressão extrema',fk:1,aim:1,cv:1.7,ap:1,fr:.6,p:1.3,t:2.5,cd:14}]},
- {n:'Oliver Aiku',b:{strength:9,speed:5,control:6,passing:6},s:{n:'Leitura de Dados e Bote Cirúrgico',d:'Calcula a chance de cada jogada, espera o atacante tirar o olho da bola e dá o bote limpo, sem carrinho',ch:1,sl:42,v:1.15,a:1.2,t:3,cd:11},ps:{n:'Físico Dominante e Quarteto de Ferro',d:'1,90m de força e impulsão: vence disputas no corpo e fecha espaços. Arranque curto muito rápido para alcançar velozes',always:1,a:1.12,v:1.06},aw:[{n:'Metavisão Defensiva',d:'Análise instantânea do campo inteiro: elimina as fintas e já está no ponto final da jogada antes dela acontecer',ch:1,sl:58,v:1.25,a:1.35,t:4,cd:12},{n:'Esmagar na Origem',d:'Avança agressivo para destruir o ataque antes de se formar: intercepta e rouba no caminho, atordoando quem chega perto',ch:1,sl:72,st:.4,sr:110,v:1.3,a:1.3,t:3.5,cd:15}]},
+ {n:'Itoshi Sae',inf:1,b:{control:10,passing:10,finishing:6,speed:4},s:{n:'Drible Passivo',d:'Espera o defensor dar o primeiro passo e usa o impulso dele para passar limpo',ctr:1,sr:115,v:1.15,t:2.5,cd:11},ps:{n:'Passes Cirúrgicos e Visão',d:'Enxerga linhas de passe invisíveis e coloca a bola exatamente onde o companheiro precisa',always:1,p:1.12,v:1.05},aw:[{n:'Destruir com Beleza',d:'Contra-drible em velocidade máxima: elástico, caneta e corte seco que humilham os marcadores',hum:1,v:1.4,a:1.4,t:3.5,cd:13},{n:'Chute e Passe Perfeitos',d:'Trivela e chute colocado no ângulo, mesmo sob pressão extrema',fk:1,aim:1,cv:1.7,ap:1,fr:.6,p:1.3,t:2.5,cd:14}],sc:{n:'Proporção Áurea',d:'Despertar secreto: Sae enxerga a espiral áurea do campo inteiro. Dribles, passes e chutes sem erro',v:1.14,a:1.2,p:1.5,dur:22,gold:1}},
+ {n:'Oliver Aiku',def:1,b:{strength:9,speed:5,control:6,passing:6},s:{n:'Leitura de Dados e Bote Cirúrgico',d:'Calcula a chance de cada jogada, espera o atacante tirar o olho da bola e dá o bote limpo, sem carrinho',ch:1,sl:42,v:1.15,a:1.2,t:3,cd:11},ps:{n:'Físico Dominante e Quarteto de Ferro',d:'1,90m de força e impulsão: vence disputas no corpo e fecha espaços. Arranque curto muito rápido para alcançar velozes',always:1,a:1.12,v:1.06},aw:[{n:'Metavisão Defensiva',d:'Análise instantânea do campo inteiro: elimina as fintas e já está no ponto final da jogada antes dela acontecer',ch:1,sl:58,v:1.25,a:1.35,t:4,cd:12},{n:'Esmagar na Origem',d:'Avança agressivo para destruir o ataque antes de se formar: intercepta e rouba no caminho, atordoando quem chega perto',ch:1,sl:72,st:.4,sr:110,v:1.3,a:1.3,t:3.5,cd:15}]},
  {n:'Ryusei Shidou',b:{speed:10,accel:8,finishing:6,strength:7},s:{n:'Chute sem Dominar',d:'Finaliza de primeira dentro da área: voleio, cabeceio ou calcanhar, sem dar tempo da defesa bloquear',fk:1,aim:1,fr:.32,p:1.45,a:1.25,t:3,cd:10},ps:{n:'Instinto e Físico Explosivo',d:'Senso natural do gol dentro da área, arranque explosivo e força para segurar zagueiros. Imprevisível de marcar',always:1,v:1.08,a:1.12,p:1.1},aw:[{n:'Alcance Expandido',d:'O Flow expande o senso espacial: sente o gol e finaliza de primeira de muito além da área, com reflexo instantâneo',fk:1,aim:1,fr:.72,p:1.55,v:1.2,a:1.3,t:4,cd:11},{n:'Big Bang Drive',d:'Bicicleta de potência máxima no ângulo, tão rápida que ninguém reage a tempo. A aura vira a boca de um dragão',fk:1,aim:1,fr:.8,cv:1.4,p:1.95,bb:1,t:2.5,cd:15}]},
  {n:'Shuto Sendou',noaw:1,b:{finishing:8,speed:5,control:5},s:{n:'Posicionamento e Leitura de Espaços',d:'Segundo atacante: se infiltra nos espaços vazios que os marcadores deixam enquanto a defesa foca nos astros, e finaliza de primeira',esp:1,fk:1,fr:.4,p:1.2,v:1.2,a:1.3,t:4,cd:9},ps:{n:'Sem passiva',d:'Só tem uma habilidade e não desperta'},aw:[]}];
 BLJ.forEach(c=>BLR.push(c));
@@ -2158,6 +2162,7 @@ function blSecShoot(q){ // precisão absurda: finaliza de primeira no canto opos
  ball.vx=dx/l*pw;ball.vy=dy/l*pw;ball.sp=0;ball.bs=0;beastShot(q);q.cool=.28;kgap=.18;q.flash=.15;lastT=q.t;lastP=q;burst(ball.x,ball.y,12,BSC,200,.5);sfx('kick',pw)}
 const SECCTR={speed:'Sprint de bloqueio',accel:'Reação antes do arranque',strength:'Corpo a corpo blindado',finishing:'Cobre o canto do chute',control:'Rouba com alcance extra',passing:'Corta as linhas de passe'};
 function blSecStart(q){
+ if(q.bl.sc.gold){blGoldStart(q);return}
  const sc=q.bl.sc;q.blSec=sc.dur;q.secOn=true;q.blSecN++;q.blSecP=0;q.secStl=0;q.secJt=0;q.secDuel=5;q.secFury=0;q.secCombo=0;q.secCT=0;q.secAdN=0;
  let key='speed',bv=-1;for(const k of['speed','accel','strength','finishing','control','passing']){const v=myPlayer.a[k]||0;if(v>bv){bv=v;key=k}} // adaptação: acha a melhor arma do rival
  q.secCtr=key;
@@ -2167,7 +2172,7 @@ function blSecStart(q){
  popup(q.x,q.y-34,'ADAPTAÇÃO: '+BSN[key].toUpperCase());popup(q.x,q.y-12,SECCTR[key]);toast('👁 '+q.bl.n+' despertou o instinto de destruição!');
  try{tone(80,.7,'sawtooth',.2);tone(160,.5,'square',.09,.06);tone(55,.9,'triangle',.18,.12)}catch(e){}}
 function blSecEnd(q){
- if(q.secA0){Object.assign(q.a,q.secA0);q.m=q.secM0}q.secOn=false;q.blSec=0;ring(q.x,q.y,BSC2,120,.5);burst(q.x,q.y,18,BSC2,180,.6)}
+ if(q.secA0){Object.assign(q.a,q.secA0);q.m=q.secM0}q.secOn=false;q.blSec=0;{const ec=q.bl&&q.bl.sc&&q.bl.sc.gold?'#ff2fd0':BSC2;ring(q.x,q.y,ec,120,.5);burst(q.x,q.y,18,ec,180,.6)}}
 const SECKEYS=['speed','accel','strength','finishing','control','passing'];
 function secHumilha(q,o){ // Dribles destrutivos: pega a MELHOR habilidade do marcador e a usa contra ele
  const k=SECKEYS.reduce((b,c)=>((o.a&&(o.a[c]||0))>(o.a[b]||0)?c:b),'speed');
@@ -2191,6 +2196,46 @@ function secHumilha(q,o){ // Dribles destrutivos: pega a MELHOR habilidade do ma
  q.secCombo=(q.secCombo||0)+1;q.secCT=3;q.secFury=Math.min(5,(q.secFury||0)+1);
  if(q.secAd&&(q.secAdN||0)<8&&q.a[q.secAd]<99){q.a[q.secAd]++;q.secAdN=(q.secAdN||0)+1}
  popup(q.x,q.y-24,'SUA '+BSN[k].toUpperCase()+' CONTRA VOCÊ');popup(q.x,q.y-4,txt);if(q.secCombo>=2)popup(q.x,q.y-44,'COMBO x'+q.secCombo)}
+const FIBN=[1,1,2,3,5,8,13,21,34,55,89],GPHI=1.618,goldFx=[];
+function goldSpiral(g,W,n){ // retângulos áureos e a espiral perfeita (Proporção Áurea); origem em (0,0), largura W
+ let x=0,y=0,w=W,h=W/GPHI;g.beginPath();g.rect(0,0,W,h);
+ for(let i=0;i<n;i++){const m=i%4;
+  if(m===0){g.rect(x,y,h,h);x+=h;w-=h}
+  else if(m===1){g.rect(x,y,w,w);y+=w;h-=w}
+  else if(m===2){g.rect(x+w-h,y,h,h);w-=h}
+  else{g.rect(x,y+h-w,w,w);h-=w}}
+ g.stroke();
+ x=0;y=0;w=W;h=W/GPHI;g.beginPath();
+ for(let i=0;i<n;i++){const m=i%4;
+  if(m===0){g.arc(x+h,y+h,h,Math.PI,1.5*Math.PI);x+=h;w-=h}
+  else if(m===1){g.arc(x,y+w,w,1.5*Math.PI,2*Math.PI);y+=w;h-=w}
+  else if(m===2){g.arc(x+w-h,y,h,0,.5*Math.PI);w-=h}
+  else{g.arc(x+w,y+h-w,w,.5*Math.PI,Math.PI);h-=w}}
+ g.lineWidth*=1.6;g.stroke()}
+function goldPush(x,y,ang,w,life){goldFx.push({x,y,ang,w,life:life||.9,t0:performance.now()/1000});if(goldFx.length>8)goldFx.shift()}
+function goldFxDraw(g){const t=performance.now()/1000;for(let i=goldFx.length-1;i>=0;i--){const f=goldFx[i],age=(t-f.t0)/f.life;if(age>=1){goldFx.splice(i,1);continue}
+ g.save();g.translate(f.x,f.y);g.rotate(f.ang);g.globalAlpha=(1-age)*.9;g.strokeStyle=age<.25?'#ffffff':'#ff2fd0';g.lineWidth=1.3;const W=f.w*(.55+.45*Math.min(1,age*3));g.translate(0,-W/GPHI/2);goldSpiral(g,W,8);g.restore()}}
+function blGoldAura(g,p,tb){ // chão: espiral áurea gigante girando sob o Sae no despertar secreto
+ const fa=Math.max(0,Math.min(1,(p.bl.sc.dur-p.blSec)*2.5,p.blSec*1.4)),S=p.r*9;
+ g.save();g.translate(p.x,p.y);g.rotate(-tb*.45);g.translate(-S/2,-S/GPHI/2);g.globalAlpha=fa*.7;g.strokeStyle='#ff2fd0';g.lineWidth=1.2;goldSpiral(g,S,9);g.restore()}
+function blGoldStart(q){
+ const sc=q.bl.sc;q.blSec=sc.dur;q.secOn=true;q.blSecN++;q.blSecP=0;q.goldPT=0;q.goldDT=0;q.goldST=0;q.goldQT=0;
+ q.blLab={s:'DESPERTAR SECRETO · '+sc.n,ic:'🔢',c:'#ff2fd0',t:3.8,m:3.8,big:true};
+ shake=Math.max(shake,14);ring(q.x,q.y,'#ff2fd0',240,.9);ring(q.x,q.y,'#ffffff',140,.6);burst(q.x,q.y,50,'#ff2fd0',380,1);burst(q.x,q.y,24,'#ffffff',240,.8);
+ goldPush(q.x,q.y,q.t?Math.PI:0,320,1.6);popup(q.x,q.y-34,'PROPORÇÃO ÁUREA');popup(q.x,q.y-12,'1 1 2 3 5 8 13 21 34 55 89');toast('🔢 '+q.bl.n+' despertou a Proporção Áurea!');
+ try{tone(440,.5,'sine',.14);tone(660,.5,'sine',.1,.08);tone(990,.6,'sine',.08,.16)}catch(e){}}
+function blGoldTick(q,d){ // despertar secreto do Sae: tudo calculado, sem erro
+ if(q.stun>0)return;
+ const gx=q.t?0:PW,dg=Math.hypot(gx-q.x,PH/2-q.y);q.goldPT-=d;q.goldDT-=d;q.goldST-=d;q.goldQT-=d;
+ if(carrier===q){
+  if(q.cool<=0&&kgap<=0&&q.goldST<=0&&dg<PW*.42&&dist(q,ball)<=reach(q)+2){q.goldST=.9;goldPush(q.x,q.y,Math.atan2(PH/2-q.y,gx-q.x),Math.min(300,dg),.9);blShoot(q,{aim:1,cv:1.6,fk:1});popup(q.x,q.y-24,'CHUTE PERFEITO');return}
+  if(q.goldDT<=0&&q.goldQT<=0){q.goldQT=.06;const o=players.filter(z=>z.t!==q.t&&!z.gk&&!z.off&&!(z.stun>0)&&dist(z,q)<125).sort((a,b)=>dist(a,q)-dist(b,q))[0];
+   if(o){const dx=q.x-o.x,dy=q.y-o.y,dd=Math.hypot(dx,dy)||1,sd=(dx*o.vy-dy*o.vx)>=0?1:-1,nx=-dy/dd*sd,ny=dx/dd*sd;
+    o.stun=.6;o.vx*=.2;o.vy*=.2;q.vx+=nx*300;q.vy+=ny*300;ball.vx=q.vx+nx*70;ball.vy=q.vy+ny*70;q.goldDT=.55;
+    popup(q.x,q.y-20,['ELÁSTICO','CANETA','GIRO DE MARSELHA','CORTE SECO'][Math.random()*4|0]);goldPush(q.x,q.y,Math.atan2(ny,nx),170,.7)}}
+  if(q.goldPT<=0&&dg>PW*.35&&kgap<=0&&q.cool<=0){const bm=passeMate(q);if(bm&&passTo(q,bm)){q.goldPT=1.6;goldPush(q.x,q.y,Math.atan2(bm.y-q.y,bm.x-q.x),Math.min(260,dist(q,bm)),.9);popup(q.x,q.y-24,'PASSE CIRÚRGICO')}}
+ }else if(!carrier||carrier.t!==q.t){const tx=ball.x+ball.vx*.3,ty=ball.y+ball.vy*.3,dd=Math.hypot(tx-q.x,ty-q.y);if(dd>1&&dd<520){q.vx+=(tx-q.x)/dd*420*d;q.vy+=(ty-q.y)/dd*420*d}} // leitura: antecipa a bola
+}
 function blSecTick(q,d){
  if(q.t!==1||!q.blAwk)return;
  if(!(q.blSec>0)){ // gatilho secreto: pressão acumulada (perdendo, sofrendo gol) depois de despertar
@@ -2198,6 +2243,7 @@ function blSecTick(q,d){
   if(state==='play'&&blCineT<=0&&q.blSecN<(blPh>=5?3:blPh>=4?2:1)){q.blSecP+=d*(1.2+(score[0]>score[1]?3:0)+(blPh-1)*.4)+(score[0]>blLast[0]?40:0);if(q.blSecP>=60)blSecStart(q)}
   return}
  if(state!=='play')return;
+ if(q.bl.sc.gold){blGoldTick(q,d);return}
  for(const o of players)if(o.secHit>0)o.secHit-=d;
  q.secFury=Math.max(0,(q.secFury||0)-.25*d);q.secCT=(q.secCT||0)-d;if(q.secCT<=0)q.secCombo=0;
  if(q.stun>0)return;
@@ -2262,6 +2308,7 @@ function blTick(d){const UI=blM&&!online;const HU=UI&&!!myPlayer.bl;$('bldp').hi
  if(phase==='play'&&!frozen){for(const p of players){if(!p.bl)continue;if(p.blLab&&p.blLab.t>0)p.blLab.t-=d;if(p.blXT>0)p.blXT-=d;if(p.blSec>0)p.blSec-=d;if(p.blCD)for(let k=0;k<3;k++)if(p.blCD[k]>0)p.blCD[k]-=d}
   for(const p of players)if(p.bl&&p.blXT>0&&p.blX)blFxTick(p,d);
   for(const q of players)if(q.bl&&q.bl.sc)blSecTick(q,d);
+  for(const q of players)if(q.bl&&q.bl.def&&!q.gk){const mx=q.t?PW*(q.blAwk?.42:.52):PW*(q.blAwk?.58:.48);if(q.t?q.x<mx:q.x>mx){q.x=mx;if(q.t?q.vx<0:q.vx>0)q.vx=0}} // zagueiro: não passa do meio-campo
   for(const q of players)if(q.bl&&q.blPas&&q.blPas.push)blPhysTick(q,d);
   for(const q of players)if(q.blAwk&&!q.awInf&&!(q.blSec>0)){q.awT=(q.awT||0)+d;if(q.awT>=BL_AWD)blAwEnd(q)} // o despertar tem duração
   const ci=blCh(),dp=blDp(ci);
@@ -2804,9 +2851,9 @@ function buildPitch(){if(bch)return buildBeach();if(kg)return buildStreet(); // 
  for(const x of[X0+20,PW+GD+PM-20])for(const y of[Y0+20,PH+PM-20]){const lg=c.createRadialGradient(x,y,0,x,y,300);lg.addColorStop(0,'rgba(255,250,215,.16)');lg.addColorStop(1,'rgba(255,250,215,0)');c.fillStyle=lg;c.fillRect(x-300,y-300,600,600)}
  vigC=document.createElement('canvas');vigC.width=W;vigC.height=H;const v=vigC.getContext('2d'),vg=v.createRadialGradient(W/2,H/2,H*.35,W/2,H/2,W*.7);vg.addColorStop(0,'rgba(0,0,0,0)');vg.addColorStop(1,'rgba(0,0,0,.36)');v.fillStyle=vg;v.fillRect(0,0,W,H)}
 function kit(p,col){ // jogador: esfera com listras/faixa da camisa, brilho suave e contorno
- const r=p.r,x=p.x,y=p.y,c2=p.c2,k=p.kit||'plain';
+ const jp=!!p.bl&&BLJ.indexOf(p.bl)>=0,r=p.r,x=p.x,y=p.y,c2=jp?null:p.c2,k=p.kit||'plain';if(jp)col='#1448b8'; // Japão: camisa azul com faixa branca e sol vermelho
  g.beginPath();g.arc(x,y,r+1.3,0,7);g.strokeStyle='rgba(0,0,0,.38)';g.lineWidth=2;g.stroke();
- g.save();g.beginPath();g.arc(x,y,r,0,7);g.fillStyle=col;g.fill();g.clip();
+ g.save();g.beginPath();g.arc(x,y,r,0,7);g.fillStyle=col;g.fill();g.clip();if(jp){g.fillStyle='#ffffff';g.fillRect(x-r,y-r*.62,2*r,r*.16);g.fillStyle='#e60026';g.beginPath();g.arc(x,y+r*.12,r*.34,0,7);g.fill()}
  if(c2&&k!=='plain'){g.fillStyle=c2;g.strokeStyle=c2;
   if(k==='band')g.fillRect(x-r,y-r*.32,2*r,r*.64);
   else if(k==='vst'){for(let i=-3;i<=3;i+=2)g.fillRect(x+i*r*.3-r*.15,y-r,r*.3,2*r)}
@@ -2868,8 +2915,8 @@ function draw(){
  if(pu.turbo>0){g.strokeStyle='#7de3ff';g.lineWidth=3;g.beginPath();g.arc(ctrl.x,ctrl.y,ctrl.r+9+pulse,0,7);g.stroke()}
  if((ST.own.aur||ST.own.aub)&&!online){const ac=ST.own.aur?'255,210,63':'125,227,255';g.beginPath();g.arc(myPlayer.x,myPlayer.y,myPlayer.r+9+pulse,0,7);g.fillStyle='rgba('+ac+',.28)';g.fill();g.strokeStyle='rgba('+ac+',.85)';g.lineWidth=2;g.stroke()}
  g.strokeStyle='#fff';g.lineWidth=2;g.beginPath();g.arc(ctrl.x,ctrl.y,ctrl.r+5+pulse,0,7);g.stroke(); // jogador controlado
- {const tb=performance.now()/1000;if(blM)for(const p of players)if(p.blSec>0&&p.bl&&p.bl.sc)blBeast(g,p,tb)} // aura do despertar secreto atrás de todos os jogadores
- for(const p of players){if(blM&&p.blC&&(p.blXT>0||p.blAwk)){const hot=!!p.blAwk,cc=p.blSec>0?'#1ff2cf':p.blC[hot?1:0];g.beginPath();g.arc(p.x,p.y,p.r+(hot?9:7)+pulse*(hot?1.5:.6),0,7);g.strokeStyle=cc;g.lineWidth=hot?5:3;g.shadowColor=p.blSec>0?'#0be0e8':p.blC[0];g.shadowBlur=hot?24:12;g.stroke();g.shadowBlur=0}blFx(p,g);blAbFx(p,g);if(cmT[p.t]>0&&!p.gk&&!duel){g.beginPath();g.arc(p.x,p.y,p.r+4+pulse,0,7);g.strokeStyle=p.t?'rgba(255,120,120,.7)':'rgba(111,227,154,.8)';g.lineWidth=2.5;g.stroke()}if(!(HC.get('p3d')&&HC.get('p3d').on)){const cc=p.t===1&&pu.gelo>0?'#9fdcff':p.col;if(p.gk&&(p.fall>0||p.dvT>0)){if(p.fb)g.globalAlpha=.8;drawGKMotion(p,cc);g.globalAlpha=1}else{if(cup3()||kg||bch)col3(p,cc);kit(p,cc)}}if(p.ab){const rd=p.abT>0?1-p.abT/ABC[p.ab]:1;g.beginPath();g.arc(p.x,p.y,p.r+5,-1.57,-1.57+6.283*Math.max(.02,Math.min(1,rd)));{const vc=(VC[p.ab]||[])[0]||'#ffd23f';g.strokeStyle=rd>=1?vc:'#7fa8ff';g.shadowColor=vc;g.shadowBlur=rd>=1?10+pulse*3:0;g.lineWidth=rd>=1?4:3;g.stroke();g.shadowBlur=0}}
+ {const tb=performance.now()/1000;if(blM){for(const p of players)if(p.blSec>0&&p.bl&&p.bl.sc){if(p.bl.sc.gold)blGoldAura(g,p,tb);else blBeast(g,p,tb)}goldFxDraw(g)}} // aura do despertar secreto atrás de todos os jogadores
+ for(const p of players){if(blM&&p.blC&&(p.blXT>0||p.blAwk)){const hot=!!p.blAwk,cc=p.blSec>0?(p.bl.sc&&p.bl.sc.gold?'#ff2fd0':'#1ff2cf'):p.blC[hot?1:0];g.beginPath();g.arc(p.x,p.y,p.r+(hot?9:7)+pulse*(hot?1.5:.6),0,7);g.strokeStyle=cc;g.lineWidth=hot?5:3;g.shadowColor=p.blSec>0?(p.bl.sc&&p.bl.sc.gold?'#ff2fd0':'#0be0e8'):p.blC[0];g.shadowBlur=hot?24:12;g.stroke();g.shadowBlur=0}blFx(p,g);blAbFx(p,g);if(cmT[p.t]>0&&!p.gk&&!duel){g.beginPath();g.arc(p.x,p.y,p.r+4+pulse,0,7);g.strokeStyle=p.t?'rgba(255,120,120,.7)':'rgba(111,227,154,.8)';g.lineWidth=2.5;g.stroke()}if(!(HC.get('p3d')&&HC.get('p3d').on)){const cc=p.t===1&&pu.gelo>0?'#9fdcff':p.col;if(p.gk&&(p.fall>0||p.dvT>0)){if(p.fb)g.globalAlpha=.8;drawGKMotion(p,cc);g.globalAlpha=1}else{if(cup3()||kg||bch)col3(p,cc);kit(p,cc)}}if(p.ab){const rd=p.abT>0?1-p.abT/ABC[p.ab]:1;g.beginPath();g.arc(p.x,p.y,p.r+5,-1.57,-1.57+6.283*Math.max(.02,Math.min(1,rd)));{const vc=(VC[p.ab]||[])[0]||'#ffd23f';g.strokeStyle=rd>=1?vc:'#7fa8ff';g.shadowColor=vc;g.shadowBlur=rd>=1?10+pulse*3:0;g.lineWidth=rd>=1?4:3;g.stroke();g.shadowBlur=0}}
   ;
   g.fillStyle='rgba(0,0,0,.3)';g.beginPath();g.arc(p.x+p.fx*p.r*.62,p.y+p.fy*p.r*.62,2.4,0,7);g.fill();
   {const dk=lum(p.col)>150;g.font='700 11px "Trebuchet MS",sans-serif';g.textAlign='center';g.lineJoin='round';g.lineWidth=3;g.strokeStyle=dk?'rgba(255,255,255,.6)':'rgba(0,0,0,.5)';g.strokeText((p.gk?1:NUM[p.i]),p.x,p.y+4);g.fillStyle=dk?'#1b1b1b':'#fff';g.fillText((p.gk?1:NUM[p.i]),p.x,p.y+4)}if(p.nm){g.font='700 10px sans-serif';g.lineWidth=3;g.strokeStyle='rgba(0,0,0,.6)';g.strokeText(p.nm,p.x,p.y+p.r+12);g.fillStyle='#fff';g.fillText(p.nm,p.x,p.y+p.r+12)}}
