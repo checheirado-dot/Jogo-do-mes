@@ -1989,7 +1989,7 @@ function blLion(g,cx,cy,S){ // leão desenhado: juba cheia com pontas, rosto com
  g.strokeStyle='#2a0303';g.lineWidth=Math.max(1,S*.05);g.beginPath();g.moveTo(cx,cy+S*.3);g.quadraticCurveTo(cx-S*.12,cy+S*.5,cx-S*.3,cy+S*.44);g.moveTo(cx,cy+S*.3);g.quadraticCurveTo(cx+S*.12,cy+S*.5,cx+S*.3,cy+S*.44);g.stroke();
  g.restore();
 }
-function blFx(p,g){if(!blM||!p.blAwk||!p.bl)return;const idx=BLR.indexOf(p.bl),t=performance.now()/1000,C=p.blC,sp=Math.hypot(p.vx||0,p.vy||0);
+function blFx(p,g){if(!blM||!p.blAwk||!p.bl)return;const idx=BLR.indexOf(p.bl),t=performance.now()/1000,C=p.blC,sp=Math.hypot(p.vx||0,p.vy||0),fAng=Math.atan2(p.fy||0,p.fx||(p.t?-1:1));
  g.save();
  if(idx===0){ // Isagi: brilho branco fixo e peças de quebra-cabeça saindo com a cor da aura
   g.beginPath();g.arc(p.x,p.y,p.r+12,0,7);g.strokeStyle='#ffffff';g.lineWidth=3;g.shadowColor='#ffffff';g.shadowBlur=30;g.stroke();g.shadowBlur=0;
@@ -2013,24 +2013,26 @@ function blFx(p,g){if(!blM||!p.blAwk||!p.bl)return;const idx=BLR.indexOf(p.bl),t
   if(sp>60){g.globalAlpha=.3+.1*Math.sin(t*6);blLion(g,p.x,p.y-4,18)}
  }else if(idx===8){ // Sae: sequência de Fibonacci girando em magenta
   const F=[1,1,2,3,5,8,13,21,34];g.font='bold 13px sans-serif';g.textAlign='center';g.textBaseline='middle';
-  for(let k=0;k<F.length;k++){const ph=(t*.5+k/F.length)%1,a=k*2.4+t*.6,r=p.r+14+ph*26;g.globalAlpha=(1-ph)*.9;g.fillStyle=k%2?'#ff2fd0':'#ffffff';g.shadowColor='#ff2fd0';g.shadowBlur=10;g.fillText(String(F[k]),p.x+Math.cos(a)*r,p.y+Math.sin(a)*r-ph*10)}
+  for(let k=0;k<F.length;k++){const ph=(t*.5+k/F.length)%1,a=k*2.4+t*.6,r=p.r+14+ph*26;g.globalAlpha=(1-ph)*.9;g.fillStyle=k%2?'#ff2fd0':'#ff9af0';g.shadowColor='#ff2fd0';g.shadowBlur=0;g.fillText(String(F[k]),p.x+Math.cos(a)*r,p.y+Math.sin(a)*r-ph*10)}
   g.shadowBlur=0;
  }else if(idx===9){ // Aiku: cobra gigante verde-neon e violeta enrolada no corpo, com a boca aberta para a bola
   const dr=p.t?-1:1,R=p.r+8;
-  g.globalAlpha=.3+.08*Math.sin(t*3);g.fillStyle='#9dff00';g.shadowColor='#9dff00';g.shadowBlur=26;g.beginPath();g.arc(p.x,p.y,p.r+22,0,7);g.fill(); // névoa violeta
-  g.shadowColor='#c04dff';g.shadowBlur=12;
+  g.globalAlpha=.3+.08*Math.sin(t*3);g.fillStyle='#9dff00';g.shadowColor='#9dff00';g.shadowBlur=0;g.beginPath();g.arc(p.x,p.y,p.r+22,0,7);g.fill(); // névoa violeta
+  g.shadowColor='#c04dff';g.shadowBlur=0;
   const N=30;for(let i=N;i>=0;i--){const u=i/N,a=-t*2+u*13,rr=R+Math.sin(u*9+t*2)*2.5+u*7,w=6.5-u*3;g.globalAlpha=.95;g.fillStyle=i%3===0?'#2a0a4a':(i%2?'#c04dff':'#9b30ff');g.beginPath();g.arc(p.x+Math.cos(a)*rr,p.y+Math.sin(a)*rr,w,0,7);g.fill()} // corpo em espiral com escamas
-  const hx=p.x+dr*(p.r+36),hy=p.y+Math.sin(t*3)*5,op=7+3*Math.sin(t*4);
-  for(let i=0;i<7;i++){const u=i/6;g.globalAlpha=.95;g.fillStyle=i%2?'#c04dff':'#9b30ff';g.beginPath();g.arc(p.x+dr*(p.r+u*30),p.y+Math.sin(t*3+u*2)*5*u,7.5-u*1.5,0,7);g.fill()} // pescoço
+  g.save();g.translate(p.x,p.y);g.rotate(fAng); // pescoço e cabeça seguem a mira
+  const hx=p.r+36,hy=Math.sin(t*3)*5,op=7+3*Math.sin(t*4);
+  for(let i=0;i<7;i++){const u=i/6;g.globalAlpha=.95;g.fillStyle=i%2?'#c04dff':'#9b30ff';g.beginPath();g.arc(p.r+u*30,Math.sin(t*3+u*2)*5*u,7.5-u*1.5,0,7);g.fill()} // pescoço
   g.fillStyle='#c04dff';g.strokeStyle='#2a0a4a';g.lineWidth=2;
-  for(const s of[-1,1]){g.beginPath();g.moveTo(hx-dr*9,hy+s*3);g.lineTo(hx+dr*22,hy+s*(op+2));g.lineTo(hx+dr*6,hy+s*1);g.closePath();g.fill();g.stroke()} // mandíbulas abertas
-  g.fillStyle='#ffffff';for(const s of[-1,1]){g.beginPath();g.moveTo(hx+dr*14,hy+s*(op-1));g.lineTo(hx+dr*18,hy+s*(op-9));g.lineTo(hx+dr*10,hy+s*(op-2));g.closePath();g.fill()} // presas
-  g.fillStyle='#ffe600';g.beginPath();g.arc(hx-dr*2,hy-4,2.4,0,7);g.fill();g.fillStyle='#000';g.fillRect(hx-dr*2-.6,hy-6,1.2,4); // olho
+  for(const s of[-1,1]){g.beginPath();g.moveTo(hx-9,hy+s*3);g.lineTo(hx+22,hy+s*(op+2));g.lineTo(hx+6,hy+s*1);g.closePath();g.fill();g.stroke()} // mandíbulas abertas
+  g.fillStyle='#ffffff';for(const s of[-1,1]){g.beginPath();g.moveTo(hx+14,hy+s*(op-1));g.lineTo(hx+18,hy+s*(op-9));g.lineTo(hx+10,hy+s*(op-2));g.closePath();g.fill()} // presas
+  g.fillStyle='#ffe600';g.beginPath();g.arc(hx-2,hy-4,2.4,0,7);g.fill();g.fillStyle='#000';g.fillRect(hx-2.6,hy-6,1.2,4); // olho
+  g.restore();
   g.shadowBlur=0;
  }else if(idx===10){ // Shidou: asas de demônio, chamas magenta e mandíbula de dragão no chute
-  const dr=p.t?-1:1,fl=Math.sin(t*9);g.shadowColor='#ff1493';g.shadowBlur=14;
+  const dr=p.t?-1:1,fl=Math.sin(t*9);g.shadowColor='#ff1493';g.shadowBlur=0;
   g.beginPath();g.arc(p.x,p.y,p.r+5,0,7);g.globalAlpha=.9;g.strokeStyle='#ff2fb5';g.lineWidth=3;g.stroke(); // anel magenta na bolinha
-  g.save();g.translate(p.x,p.y);g.scale(dr*-1*2.1,2.1); // asas de demônio maiores, atrás da bolinha
+  g.save();g.translate(p.x,p.y);g.rotate(fAng+Math.PI);g.scale(2.1,2.1); // asas de demônio maiores, atrás da bolinha
   for(const s of[-1,1]){g.globalAlpha=.85;g.fillStyle='#1a0a2e';g.strokeStyle='#ff1493';g.lineWidth=1.4;
    g.beginPath();g.moveTo(5,s*3);g.quadraticCurveTo(18,s*(20+fl*3),32,s*(12+fl*2));g.lineTo(26,s*8);g.lineTo(29,s*3);g.lineTo(21,s*1);g.closePath();g.fill();g.stroke()}
   g.restore();
@@ -2049,7 +2051,7 @@ const BLJ=[
  {n:'Ryusei Shidou',b:{speed:10,accel:8,finishing:6,strength:7},s:{n:'Chute sem Dominar',d:'Finaliza de primeira dentro da área: voleio, cabeceio ou calcanhar, sem dar tempo da defesa bloquear',fk:1,aim:1,fr:.32,p:1.45,a:1.25,t:3,cd:10},ps:{n:'Instinto e Físico Explosivo',d:'Senso natural do gol dentro da área, arranque explosivo e força para segurar zagueiros. Imprevisível de marcar',always:1,v:1.08,a:1.12,p:1.1},aw:[{n:'Alcance Expandido',d:'O Flow expande o senso espacial: sente o gol e finaliza de primeira de muito além da área, com reflexo instantâneo',fk:1,aim:1,fr:.72,p:1.55,v:1.2,a:1.3,t:4,cd:11},{n:'Big Bang Drive',d:'Bicicleta de potência máxima no ângulo, tão rápida que ninguém reage a tempo. A aura vira a boca de um dragão',fk:1,aim:1,fr:.8,cv:1.4,p:1.95,bb:1,t:2.5,cd:15}]},
  {n:'Shuto Sendou',noaw:1,b:{finishing:8,speed:5,control:5},s:{n:'Posicionamento e Leitura de Espaços',d:'Segundo atacante: se infiltra nos espaços vazios que os marcadores deixam enquanto a defesa foca nos astros, e finaliza de primeira',esp:1,fk:1,fr:.4,p:1.2,v:1.2,a:1.3,t:4,cd:9},ps:{n:'Sem passiva',d:'Só tem uma habilidade e não desperta'},aw:[]}];
 BLJ.forEach(c=>BLR.push(c));
-BLC.push(['#ff2fd0','#ffffff'],['#9dff00','#8a2be2'],['#ff1493','#ff4de0'],['#6a1b9a','#e040fb']);
+BLC.push(['#ff2fd0','#ff6be6'],['#9dff00','#8a2be2'],['#ff1493','#ff4de0'],['#6a1b9a','#e040fb']);
 BLA.push('🔢','🐍','😈','🎯');
 BLP.push({n:'🇯🇵 Japão Sub-20',lv:97,bots:BLJ,jp:1});
 BLD.push({gk:97,aw:1.4,d0:70,gap:3,ch:.75,cdm:.8,sp:10,pro:1});
@@ -2223,17 +2225,21 @@ function blPhysTick(p,d){ // Físico Avassalador: com a bola, empurra quem chega
   if(dd<95&&dd>1){cerc++;const nx=(o.x-p.x)/dd,ny=(o.y-p.y)/dd;o.vx+=nx*1400*d;o.vy+=ny*1400*d;if(dd<p.r+o.r+8)o.stun=Math.max(o.stun||0,.25)}}
  if(cerc){p.stun=0;const k=Math.pow(.97,d*60);p.vx*=k;p.vy*=k}}
 function blFxTick(p,d){const X=p.blX;if(!X)return;
- if(X.esp&&carrier&&carrier.t===p.t&&carrier!==p&&!carrier.gk){const gx=p.t?0:PW,dir=p.t?-1:1;let bx=p.x,by=p.y,bs=-1e9; // infiltra no espaço livre mais perigoso
-  for(let k=0;k<9;k++){const px=gx-dir*(60+(k%3)*70),py=PH/2+((k/3|0)-1)*GH*.9;let md=1e9;for(const o of players){if(o.t===p.t||o.gk||o.off)continue;md=Math.min(md,Math.hypot(o.x-px,o.y-py))}
-   const sc=Math.min(md,200)-Math.hypot(px-p.x,py-p.y)*.25;if(sc>bs){bs=sc;bx=px;by=py}}
-  const dd=Math.hypot(bx-p.x,by-p.y);if(dd>8){p.vx+=(bx-p.x)/dd*520*d;p.vy+=(by-p.y)/dd*520*d}}
+ if(X.esp&&carrier&&carrier.t===p.t&&carrier!==p&&!carrier.gk){p.espT=(p.espT||0)-d;
+  if(p.espT<=0||p.espX==null){p.espT=.15;const gx=p.t?0:PW,dir=p.t?-1:1;let bx=p.x,by=p.y,bs=-1e9; // infiltra no espaço livre mais perigoso
+   const ri=players.filter(o=>o.t!==p.t&&!o.gk&&!o.off);
+   for(let k=0;k<9;k++){const px=gx-dir*(60+(k%3)*70),py=PH/2+((k/3|0)-1)*GH*.9;let md=1e9;for(const o of ri)md=Math.min(md,Math.hypot(o.x-px,o.y-py));
+    const sc=Math.min(md,200)-Math.hypot(px-p.x,py-p.y)*.25;if(sc>bs){bs=sc;bx=px;by=py}}
+   p.espX=bx;p.espY=by}
+  const dd=Math.hypot(p.espX-p.x,p.espY-p.y);if(dd>8){p.vx+=(p.espX-p.x)/dd*520*d;p.vy+=(p.espY-p.y)/dd*520*d}}
  p.ctrCd=(p.ctrCd||0)-d;p.humCd=(p.humCd||0)-d;
- if(X.ctr&&carrier===p&&p.ctrCd<=0){const o=players.filter(q=>q.t!==p.t&&!q.gk&&!q.off&&!(q.stun>0)&&dist(q,p)<(X.sr||115)).sort((a,b)=>dist(a,p)-dist(b,p))[0];
+ p.fxT=(p.fxT||0)-d;const fxOk=p.fxT<=0;if(fxOk)p.fxT=.06;
+ if(X.ctr&&fxOk&&carrier===p&&p.ctrCd<=0){const o=players.filter(q=>q.t!==p.t&&!q.gk&&!q.off&&!(q.stun>0)&&dist(q,p)<(X.sr||115)).sort((a,b)=>dist(a,p)-dist(b,p))[0];
   if(o){const dx=p.x-o.x,dy=p.y-o.y,dd=Math.hypot(dx,dy)||1,cl=((o.vx-p.vx)*dx+(o.vy-p.vy)*dy)/dd;
    if(cl>40){const sd=(dx*o.vy-dy*o.vx)>=0?1:-1,nx=-dy/dd*sd,ny=dx/dd*sd;
     o.stun=.45;o.vx*=.2;o.vy*=.2;p.vx+=nx*260;p.vy+=ny*260;ball.vx=p.vx+nx*70;ball.vy=p.vy+ny*70;
     p.ctrCd=.8;popup(p.x,p.y-20,'PASSOU LIMPO');}}}
- if(X.hum&&carrier===p&&p.humCd<=0){const o=players.filter(q=>q.t!==p.t&&!q.gk&&!q.off&&dist(q,p)<130).sort((a,b)=>dist(a,p)-dist(b,p))[0];if(o){p.humCd=.55;secHumilha(p,o)}}
+ if(X.hum&&fxOk&&carrier===p&&p.humCd<=0){const o=players.filter(q=>q.t!==p.t&&!q.gk&&!q.off&&dist(q,p)<130).sort((a,b)=>dist(a,p)-dist(b,p))[0];if(o){p.humCd=.55;secHumilha(p,o)}}
  if(X.mg){const dd=dist(p,ball);if(dd<X.mg&&dd>p.r){const k=(1-dd/X.mg)*1100*d;ball.vx+=(p.x-ball.x)/dd*k;ball.vy+=(p.y-ball.y)/dd*k}} // buraco negro: puxa a bola
  if(X.ch&&carrier!==p){const tx=ball.x+ball.vx*.35,ty=ball.y+ball.vy*.35,dd=Math.hypot(tx-p.x,ty-p.y);if(dd<560&&dd>1){p.vx+=(tx-p.x)/dd*560*d;p.vy+=(ty-p.y)/dd*560*d}} // metavisão: antecipa a bola
  if(X.zz){p.zzT=(p.zzT||0)-d;if(p.zzT<=0){p.zzT=.26+Math.random()*.12;p.zzD=(p.zzD||1)*-1;const sp=Math.hypot(p.vx,p.vy),ux=sp>20?p.vx/sp:p.fx,uy=sp>20?p.vy/sp:p.fy;p.vx+=-uy*p.zzD*X.zz;p.vy+=ux*p.zzD*X.zz}} // ginga: zigue-zague
@@ -2535,7 +2541,7 @@ const WXN={sol:['☀️','Dia de sol'],inverno:['❄️','Dia de inverno'],chuva
 function pickWx(){wx=blM?'nenhum':['sol','inverno','chuva'][Math.random()*3|0];wxP.length=wxR.length=0;wxB=4;wxFl=0;wxDb=0;wxFt=4+Math.random()*6}
 function thunder(){if(!AC||cfg.mute)return;try{const len=Math.floor(AC.sampleRate*2.2),b=AC.createBuffer(1,len,AC.sampleRate),a=b.getChannelData(0);for(let i=0;i<len;i++){const t=i/len;a[i]=(Math.random()*2-1)*Math.min(1,t*14)*Math.pow(1-t,2.2)}
  const o=AC.createBufferSource(),n=AC.createGain(),f=AC.createBiquadFilter();f.type='lowpass';f.frequency.value=220;n.gain.value=.5;o.buffer=b;o.connect(f);f.connect(n);n.connect(AC.destination);o.start()}catch(e){}}
-function drawWx(){if(wx===null)pickWx();
+function drawWx(){if(wx===null)pickWx();if(wx==='nenhum')return;
  const t=performance.now()/1000,dt=Math.min(fdt||.016,.05);g.save();g.setTransform(dpr,0,0,dpr,0,0);
  const want=wx==='chuva'?Math.min(190,(W*H/4800)|0):wx==='inverno'?Math.min(130,(W*H/6500)|0):0;
  while(wxP.length<want)wxP.push({x:Math.random()*(W+160),y:Math.random()*H,z:.4+Math.random()*.6,w:Math.random()*6.28});
