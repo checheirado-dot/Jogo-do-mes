@@ -704,7 +704,7 @@ function drawCrowd(){if(kg||bch||!cwd.t0)return;const now=performance.now(),el=(
   g.strokeStyle='#fff';g.lineWidth=1.4;g.beginPath();g.moveTo(q.x-13*z,q.y);g.lineTo(q.x+13*z,q.y);g.moveTo(q.x,q.y-13*z);g.lineTo(q.x,q.y+13*z);g.stroke()}
  g.restore()}
 
-function reset(full,k0=0){ball.sp=0;spamCnt=0;spamT=0;LRN.sh=null;for(const q of players){q.chB=0;q.ch=1;q.lu=q.luCd=0} // volta às posições e dá a saída de bola (time que sofreu o gol)
+function reset(full,k0=0){ball.sp=0;ball.bs=0;spamCnt=0;spamT=0;LRN.sh=null;for(const q of players){q.chB=0;q.ch=1;q.lu=q.luCd=0} // volta às posições e dá a saída de bola (time que sofreu o gol)
  for(const p of players){p.x=p.t?PW-p.hx*PW:p.hx*PW;p.y=p.hy*PH;p.rk=p.i;p.vx=p.vy=0;p.fx=p.t?-1:1;p.fy=0;p.think=0;p.stun=0;p.legT=0;p.chk=0;p.kb=0;p.tg=null;p.sp=null;p.fall=0;p.dvT=0;p.fb=false;p.pl=null;p.plc=0;p.spl=undefined;if(p.g0)p.r=p.gr}
  for(const p of players){if(p.off){p.x=-4000-p.i*60;p.y=PH/2}else if(p.gk){p.x=p.t?PW-30:30;p.y=PH/2}}ctrl=myPlayer;pend=null;recv=null;ch=0;
  cmN[0]=cmN[1]=0;cmLast=null;if(full){cmT[0]=cmT[1]=0;rbuf=[];rep=null;pk=null;pkw=-1;ufz=0;score=[0,0];clock=0;lastP=null;finalGoalFx.t=0;fxs.length=0;fxClr();players.forEach(p=>p.st=1);resetAd();lrnReset();pu.turbo=pu.super=pu.gelo=0;orbs.length=0;en=1;fire=0;orbT=6;myPlayer.rb=1;sty[1]=STK[Math.floor(Math.random()*STK.length)]}
@@ -777,7 +777,7 @@ function kick(p,dx,dy,pw,skill,pr,rad,tch){pw*=.9*(crzEv==='rocket'?1.7:1)*blMl(
  const err=gauss()*((99-skill)/99*.34)*(1+.7*vr)*(1.25-.6*pr)*(p===ctrl||(online&&p.rem)?0:1),c=Math.cos(err),s=Math.sin(err),nx=dx/l,ny=dy/l;
  const kc=p===ctrl?0:.25;ball.vx=ball.vx*kc+(nx*c-ny*s)*pw;ball.vy=ball.vy*kc+(nx*s+ny*c)*pw;
  ball.sp=pw>260?Math.max(-1,Math.min(1,(p.vx*-ny+p.vy*nx)/vmaxOf(p)*1.4))*(p===ctrl?.5:.28)*(rk?.42:(kg?.12:1))*Math.min(1,pw/420):0; // curva leve: sai do movimento lateral do chutador
- if(p.blX&&p.blXT>0&&p.blX.cv)ball.sp=Math.max(-1.3,Math.min(1.3,(p.blX.cv-1)*.9*(p.t?-1:1)));
+ if(p.blX&&p.blXT>0&&p.blX.cv)ball.sp=Math.max(-1.3,Math.min(1.3,(p.blX.cv-1)*.9*(p.t?-1:1)));ball.bs=0;if(p.bl&&p.bl.bst&&!rad&&!tch)beastShot(p);
  {const rc=pw*ball.m/p.m*.3;p.vx-=nx*rc;p.vy-=ny*rc}p.cool=.28;kgap=.18;p.flash=.15;lastT=p.t;lastP=p;if(!tch)spamKick();if(p===myPlayer){mstat.sx=p.x;learnShot(p)}lrnKick(p);
  if(pw>200){burst(ball.x,ball.y,pw>420?9:5,'#e9f5ea',60+pw*.2,.45);sfx('kick',pw)}
  return true}
@@ -1475,7 +1475,7 @@ function upd(dt){
  for(const p of players){p.x+=p.vx*dt;p.y+=p.vy*dt;if(!p.gk&&!p.off&&fxs.length<220&&Math.random()<dt*14&&p.vx*p.vx+p.vy*p.vy>16000)burst(p.x-p.vx*.05,p.y+p.r*.6,1,'#cfe5c4',22,.42)}
  ball.x+=ball.vx*dt;ball.y+=ball.vy*dt;
  const fr=crzEv==='bounce'?0:1,drag=rk?.58:(kg?.9:SANDB()?.9:.6),rollLoss=rk?43:(kg?78:SANDB()?92:50),k=Math.exp(-dt*drag*fr);ball.vx*=k;ball.vy*=k;const bs0=Math.hypot(ball.vx,ball.vy);if(bs0>0){const nb=Math.max(0,bs0-rollLoss*dt*fr);ball.vx*=nb/bs0;ball.vy*=nb/bs0}
- if(ball.sp){const w=ball.sp*dt,cw=Math.cos(w),sw=Math.sin(w),ux=ball.vx,uy=ball.vy;ball.vx=ux*cw-uy*sw;ball.vy=ux*sw+uy*cw;ball.sp*=Math.exp(-dt*(rk?1.05:(kg?1.8:.65)));if(Math.abs(ball.sp)>(rk?.07:(kg?.035:.12))&&(rtick&1))burst(ball.x,ball.y,1,'#cfe8ff',25,.3);if(Math.abs(ball.sp)<(rk?.035:(kg?.035:.02))||Math.hypot(ball.vx,ball.vy)<90)ball.sp=0}
+ if(ball.sp){if(ball.bs)ball.bt=(ball.bt||0)+dt;const w=ball.sp*(ball.bs?beastK(ball.bt):1)*dt,cw=Math.cos(w),sw=Math.sin(w),ux=ball.vx,uy=ball.vy;ball.vx=ux*cw-uy*sw;ball.vy=ux*sw+uy*cw;ball.sp*=Math.exp(-dt*(ball.bs?.8:(rk?1.05:(kg?1.8:.65))));if(Math.abs(ball.sp)>(rk?.07:(kg?.035:.12))&&(rtick&1))burst(ball.x,ball.y,1,ball.bs?'#19f0c8':'#cfe8ff',ball.bs?55:25,ball.bs?.45:.3);if(Math.abs(ball.sp)<(rk?.035:(kg?.035:.02))||Math.hypot(ball.vx,ball.vy)<90)ball.sp=0}else if(ball.bs)ball.bs=0;
  const sp=Math.hypot(ball.vx,ball.vy),cap=crzEv==='rocket'?950:630;if(sp>cap){ball.vx*=cap/sp;ball.vy*=cap/sp}
  const bsPre=Math.hypot(ball.vx,ball.vy);
  for(let i=0;i<players.length;i++){const p=players[i];if(p.off)continue;
@@ -1912,7 +1912,7 @@ const BLR=[
 {n:'Nagi Seishirō',b:{accel:10},s:{n:'Domínio Buraco Negro',d:'Puxa a bola para perto e a amortece no toque, deixando-a quase parada',dp:.15,mg:120,t:3,cd:11},ps:{n:'Domínio de Bola Perfeito',d:'Absorve qualquer passe e deixa a bola morta aos pés',dp:.55,a:1.12},aw:[{n:'Giro Zero Reset',d:'Domina no ar, zera a velocidade da bola e arranca em seguida',rs:1,mg:90,a:1.3,t:2,cd:14},{n:'Chute de Voleio Falso',d:'Finge o chute, atordoa os defensores perto e finaliza forte de primeira',st:.55,sr:110,p:1.4,fk:1,fr:.5,t:2.2,cd:16}]},
 {n:'Bachira Meguru',b:{control:10},s:{n:'Drible Elástico e Imprevisível',d:'Gingado solto: muda de direção e de ritmo de forma brusca',v:1.25,a:1.3,zz:200,t:2.5,cd:11},ps:{n:'Futebol Monstro',d:'Joga guiado pela intuição, sempre mais rápido',a:1.15,v:1.08},aw:[{n:'Ginga x Monstro',d:'Ginga brasileira com instinto selvagem: dribles em zigue-zague em altíssima velocidade',v:1.35,a:1.4,zz:260,t:3,cd:14},{n:'Passe de Precisão',d:'Dá o passe com efeito para o companheiro mais livre, na frente dele',ap:1,cv:1.6,p:1.2,t:2.5,cd:16}]},
 {n:'Chigiri Hyoma',b:{speed:8,accel:4},s:{n:'Pantera Vermelha',d:'Velocidade explosiva: arranca e corre mais que qualquer marcador',v:1.5,a:1.6,t:2.5,cd:12},ps:{n:'Drible Sem Desacelerar',d:'Toques longos à frente e corre para alcançar a bola',v:1.1,a:1.15},aw:[{n:'44° Panther Snipe',d:'Corta para o meio e bate colocado, com curva, no ângulo oposto ao goleiro',ct:300,cv:1.6,p:1.6,aim:1,fk:1,fr:.6,t:2.2,cd:15},{n:'Furtividade e Rastreamento',d:'Volta rápido na defesa e rouba a bola de quem estiver com ela',v:1.3,sl:70,st:.3,sr:90,t:2.5,cd:14}]},
-{n:'Rin Itoshi',b:{finishing:10,speed:4},s:{n:'Precisão Absoluta de Chute',d:'Chute curvo milimétrico de longa distância, no canto',cv:2.4,p:1.2,aim:1,fk:1,fr:.8,t:3,cd:10},ps:{n:'Percepção Espacial',d:'Lê o campo inteiro, sempre um passo à frente',a:1.15,p:1.05},aw:[{n:'Controle de Marionetes',d:'Manipula a marcação: atordoa os rivais por perto e ganha ritmo',st:.55,sr:130,v:1.15,t:3,cd:14},{n:'Estado Destruidor',d:'Transe: destrói cada rival com a força dele mesmo e finaliza com violência',p:1.5,v:1.4,a:1.3,st:.35,sr:90,fk:1,fr:.6,t:3.5,cd:16}]},
+{n:'Rin Itoshi',bst:1,b:{finishing:10,speed:4},s:{n:'Precisão Absoluta de Chute',d:'Chute curvo milimétrico de longa distância, no canto',cv:2.4,p:1.2,aim:1,fk:1,fr:.8,t:3,cd:10},ps:{n:'Percepção Espacial',d:'Lê o campo inteiro, sempre um passo à frente',a:1.15,p:1.05},aw:[{n:'Controle de Marionetes',d:'Manipula a marcação: atordoa os rivais por perto e ganha ritmo',st:.55,sr:130,v:1.15,t:3,cd:14},{n:'Estado Destruidor',d:'Transe: destrói cada rival com a força dele mesmo e finaliza com violência',p:1.5,v:1.4,a:1.3,st:.35,sr:90,fk:1,fr:.6,t:3.5,cd:16}],sc:{n:'Instinto de Destruição',d:'Despertar secreto: Rin vira um monstro que devora a melhor arma do rival',v:1.3,a:1.4,p:1.5,dur:22}},
 {n:'Kunigami Rensuke',b:{strength:10,finishing:4},s:{n:'Canhão de Esquerda',d:'Chute de perna esquerda de potência destrutiva, de primeira',p:1.6,fk:1,fr:.55,t:2.5,cd:12},ps:{n:'Força Física Bruta',d:'Vence disputas corpo a corpo e resiste a empurrões',p:1.12,a:1.05},aw:[{n:'Ambidestria',d:'Chuta com as duas pernas, com força e precisão no canto',p:1.3,a:1.2,aim:1,fk:1,fr:.55,t:3,cd:15},{n:'Canhão Carregado',d:'Chute ainda mais violento de muito longe, atordoa quem estiver perto',p:1.9,st:.3,sr:90,fk:1,fr:.85,t:3,cd:16}]},
 {n:'Barou Shōei',b:{finishing:8,strength:4},s:{n:'Zona do Rei',d:'Chute potente de até 28 metros do gol',p:1.5,fk:1,fr:.32,t:3,cd:11},ps:{n:'Físico Avassalador',d:'Empurra defensores e segura a bola cercado',p:1.15,a:1.1},aw:[{n:'Chop Dribble',d:'Cortes secos e violentos em alta velocidade, atordoando quem chega perto',v:1.5,a:1.4,zz:300,st:.3,sr:90,t:2,cd:14},{n:'Olho de Predador',d:'Foca no goleiro e chuta fortíssimo no canto no instante da distração',p:1.8,aim:1,fk:1,fr:.55,t:3,cd:16}]},
 {n:'Reo Mikage',b:{passing:8,control:4},s:{n:'Camaleão',d:'Copia a habilidade ativa do jogador mais próximo (ou a inicial dele)',cp:1,cd:12},ps:{n:'Visão Tática e Passe Completo',d:'Lê o jogo e distribui passes curtos e longos',a:1.15},aw:[{n:'Metavisão',d:'Antecipa jogadas e corre para os espaços livres',a:1.4,v:1.2,ch:1,t:3,cd:14},{n:'Passe Completo',d:'Passe perfeito com efeito e aceleração para o melhor companheiro',ap:1,cv:2,a:1.3,t:2.5,cd:16}]}];
@@ -2002,7 +2002,7 @@ function blFx(p,g){if(!p.blAwk||!p.bl)return;const idx=BLR.indexOf(p.bl),t=perfo
   for(let k=0;k<3;k++){const ph=(t*.7+k*.33)%1;g.globalAlpha=1-ph;g.fillText(E[k],p.x+Math.sin(k*3+t*2)*12+ph*14*(k%2?1:-1),p.y-16-ph*46)}
  }else if(idx===3){ // Chigiri: a aura cresce quando ele corre
   const f=Math.min(1,sp/520);g.beginPath();g.arc(p.x,p.y,p.r+10+f*22,0,7);g.strokeStyle=C[1];g.lineWidth=2+f*3;g.globalAlpha=.35+.5*f;g.shadowColor=C[0];g.shadowBlur=10+f*20;g.stroke();
- }else if(idx===4){ // Rin: espinhos saem do corpo ao andar
+ }else if(idx===4){ // Rin: espinhos saem do corpo ao andar; no despertar secreto vira um monstro
   if(sp>60){g.strokeStyle=C[1];g.lineWidth=3;g.lineCap='round';for(let k=0;k<6;k++){const a=k*Math.PI/3+t*.5,r0=p.r+3,r1=p.r+14+Math.sin(t*12+k)*3;g.beginPath();g.moveTo(p.x+Math.cos(a)*r0,p.y+Math.sin(a)*r0);g.lineTo(p.x+Math.cos(a)*r1,p.y+Math.sin(a)*r1);g.stroke()}}
  }else if(idx===5){ // Kunigami: cartas de pôquer desenhadas girando em volta dele
   const SU=['s','h','d','c'],SC=['#111','#d7223a','#d7223a','#111'];
@@ -2018,13 +2018,123 @@ const BLA=['🦅','🐱','🐍','🐆','🐺','🦏','🦁','🦎'];
 let blCineT=0,blLast=[0,0],blUi=0,blGap=0;
 const blCh=()=>0;
 function blDp(i){const d=blS().dp||(blS().dp={});return d[i]||(d[i]={d:0,aw:false})}
-function blMl(p,k){if(!p||!p.bl)return 1;let m=1;if(p.blXT>0&&p.blX&&p.blX[k])m*=p.blX[k];if(p.blPas&&p.blPas[k])m*=p.blPas[k];return m}
+function blMl(p,k){if(!p||!p.bl)return 1;let m=1;if(p.blSec>0&&p.bl.sc&&p.bl.sc[k])m*=p.bl.sc[k];if(p.blXT>0&&p.blX&&p.blX[k])m*=p.blX[k];if(p.blPas&&p.blPas[k])m*=p.blPas[k];return m}
 function blCine(big,small,sub,p,awk){ // sem congelar o jogo: só mostra o nome da habilidade em cima da cabeça do jogador
  if(!p)return;const ci=p.bl?Math.max(0,BLR.indexOf(p.bl)):blCh();p.blLab={s:awk?'DESPERTAR · '+(small||''):big,ic:awk?'🔥':BLA[ci],c:BLC[ci][1],t:awk?2.8:2.1,m:awk?2.8:2.1,big:!!awk}}
 function blAim(p,X){const gx=p.t?0:PW,cy=PH/2;let ty=cy+(Math.random()<.5?-1:1)*GH*.5;if(X&&X.aim){const gk=players.find(o=>o.t!==p.t&&o.gk&&!o.off);ty=cy+((gk&&gk.y>cy)?-1:1)*GH*.78}return[gx,ty]}
 function blShoot(p,X){const a=blAim(p,X);let dx=a[0]-p.x,dy=a[1]-p.y;const l=Math.hypot(dx,dy)||1;dx/=l;dy/=l;const pw=shotPw(p,.95)*.9*blMl(p,'p');
  ball.vx=dx*pw;ball.vy=dy*pw;ball.sp=X.cv?Math.max(-1.3,Math.min(1.3,(X.cv-1)*.9*(p.t?-1:1))):0;
- p.cool=.28;kgap=.18;p.flash=.15;lastT=p.t;lastP=p;burst(ball.x,ball.y,10,'#ffffff',160+pw*.2,.5);sfx('kick',pw);X.fk=0}
+ if(p.bl&&p.bl.bst){ball.bs=0;beastShot(p)}p.cool=.28;kgap=.18;p.flash=.15;lastT=p.t;lastP=p;burst(ball.x,ball.y,10,'#ffffff',160+pw*.2,.5);sfx('kick',pw);X.fk=0}
+/* ---------- RIN ITOSHI: CHUTE ANIMALESCO + DESPERTAR SECRETO (INSTINTO DE DESTRUIÇÃO) ---------- */
+const BSC='#1ff2cf',BSC2='#0be0e8',BSN={speed:'Velocidade',accel:'Aceleração',strength:'Força',finishing:'Finalização',control:'Controle de bola',passing:'Passe'};
+const beastK=bt=>bt<.12?-.7:-.7+3.1*Math.min(1,(bt-.12)/.1); // curva em S: sai torta para fora e faz o gancho brutal no fim
+function beastSim(x,y,ang,sp0,spin,gx){ // simula o voo com a mesma física do jogo (arrasto, atrito, efeito)
+ const dt=1/120;let vx=Math.cos(ang)*sp0,vy=Math.sin(ang)*sp0,bt=0,sp=spin;
+ for(let i=0;i<260;i++){x+=vx*dt;y+=vy*dt;if(y<10||y>PH-10)return{ok:false};
+  const k=Math.exp(-dt*.6);vx*=k;vy*=k;const b0=Math.hypot(vx,vy);if(b0>0){const nb=Math.max(0,b0-50*dt);vx*=nb/b0;vy*=nb/b0}
+  if(sp){bt+=dt;const w=sp*beastK(bt)*dt,cw=Math.cos(w),sw=Math.sin(w),ux=vx,uy=vy;vx=ux*cw-uy*sw;vy=ux*sw+uy*cw;sp*=Math.exp(-dt*.8);if(Math.abs(sp)<.02||Math.hypot(vx,vy)<90)sp=0}
+  if(gx===0?x<=0:x>=PW){const v=Math.hypot(vx,vy);return{ok:i*dt<=1.35&&v>=200,y,t:i*dt,v}}
+  if(Math.hypot(vx,vy)<60)break}
+ return{ok:false}}
+function beastShot(p){ // chute com curva animalesca: sai para fora e faz o gancho no canto oposto ao do goleiro
+ if(!p.bl||!p.bl.bst)return false;
+ const sec=p.blSec>0,mags=sec?[1.25,1,.8,.6,.45]:p.blAwk?[1.1,.9,.7,.5,.35]:[.9,.7,.5,.35];
+ const gx=p.t?0:PW,cy=PH/2,s0=Math.min(630,Math.hypot(ball.vx,ball.vy));
+ if(s0<300||(p.t?-ball.vx:ball.vx)<=0||Math.abs(gx-ball.x)>500)return false;
+ const gk=players.find(o=>o.t!==p.t&&o.gk&&!o.off),ty=cy+((gk&&gk.y>cy)?-1:1)*GH*(sec?.36:.3+Math.random()*.14),down=ty>ball.y,a0=Math.atan2(ty-ball.y,gx-ball.x);
+ for(const mg of mags){const M=mg*(p.t?-1:1)*(down?1:-1),ev=o=>{const r=beastSim(ball.x,ball.y,a0+o,s0,M,gx);return r.ok?r.y-ty:null};
+  let best=null,prev=null,po=0;
+  for(let o=-.95;o<=.951;o+=.035){const e=ev(o);
+   if(e!==null&&prev!==null&&(e<=0)!==(prev<=0)){let lo=po,hi=o,el=prev;
+    for(let k=0;k<12;k++){const m=(lo+hi)/2,em=ev(m);if(em===null)break;if((em<=0)===(el<=0)){lo=m;el=em}else hi=m}
+    const m=(lo+hi)/2,r=beastSim(ball.x,ball.y,a0+m,s0,M,gx);if(r.ok&&Math.abs(r.y-ty)<8&&(!best||Math.abs(m)<Math.abs(best.o)))best={o:m}}
+   prev=e;po=o}
+  if(best){const a=a0+best.o;ball.vx=Math.cos(a)*s0;ball.vy=Math.sin(a)*s0;ball.sp=M;ball.bs=1;ball.bt=0;ball.tr=[];
+   burst(ball.x,ball.y,sec?18:10,BSC,sec?300:220,.55);if(sec)ring(ball.x,ball.y,BSC,70,.4);return true}}
+ return false}
+function blBeastTrail(g){ // rastro de garras turquesa atrás da bola
+ const T=ball.tr||(ball.tr=[]);T.push([ball.x,ball.y]);if(T.length>16)T.shift();if(T.length<2)return;
+ g.save();g.lineCap='round';g.lineJoin='round';
+ for(let k=1;k<T.length;k++){const a=k/T.length;g.strokeStyle='rgba(31,242,207,'+(.6*a)+')';g.lineWidth=2+a*8;g.beginPath();g.moveTo(T[k-1][0],T[k-1][1]);g.lineTo(T[k][0],T[k][1]);g.stroke()}
+ const t=performance.now()/1000;g.strokeStyle='#d8fff7';g.lineWidth=1.4;
+ for(let j=-1;j<=1;j++){g.beginPath();for(let k=1;k<T.length;k++){const a=k/T.length,o=Math.sin(t*22+k*.9+j*2.1)*a*7+j*a*6,nx=T[k][1]-T[k-1][1],ny=-(T[k][0]-T[k-1][0]),l=Math.hypot(nx,ny)||1;g.lineTo(T[k][0]+nx/l*o,T[k][1]+ny/l*o)}g.stroke()}
+ g.fillStyle='rgba(31,242,207,.32)';g.beginPath();g.arc(ball.x,ball.y,ball.r+6,0,7);g.fill();g.restore()}
+function blBeast(g,p,t){ // aura turquesa com um monstro totalmente distorcido e animalesco em volta dele
+ const S=p.r*1.25,fa=Math.max(0,Math.min(1,(p.bl.sc.dur-p.blSec)*2.5,p.blSec*1.4));
+ g.save();g.translate(p.x,p.y);g.scale(1+Math.sin(t*7)*.05,1+Math.cos(t*6)*.05);g.globalAlpha=fa;g.lineJoin='round';g.lineCap='round';
+ const R=S*5.4,gr=g.createRadialGradient(0,0,S*.5,0,0,R);gr.addColorStop(0,'rgba(31,242,207,.6)');gr.addColorStop(.45,'rgba(11,224,232,.24)');gr.addColorStop(1,'rgba(11,224,232,0)');
+ g.fillStyle=gr;g.beginPath();g.arc(0,0,R,0,7);g.fill();
+ for(let k=0;k<26;k++){ // chamas/espinhos irregulares
+  const a=k/26*6.2832+Math.sin(t*1.1+k*1.9)*.16,L=S*(1.3+1.7*Math.abs(Math.sin(t*2.6+k*2.3))+(k%5===0?1.2:0)),b=S*1.1,da=.12+(k%3)*.035,sw=Math.sin(t*5+k)*S*.5,ta=a+Math.sin(k*1.7)*.25,ca=Math.cos(a),sa=Math.sin(a);
+  g.beginPath();g.moveTo(Math.cos(a-da)*b,Math.sin(a-da)*b);g.quadraticCurveTo(ca*(b+L*.6)-sa*sw,sa*(b+L*.6)+ca*sw,Math.cos(ta)*(b+L),Math.sin(ta)*(b+L));g.quadraticCurveTo(ca*(b+L*.5)-sa*sw*.3,sa*(b+L*.5)+ca*sw*.3,Math.cos(a+da)*b,Math.sin(a+da)*b);g.closePath();
+  g.fillStyle=k%2?'rgba(31,242,207,.78)':'rgba(11,224,232,.62)';g.fill();g.strokeStyle='rgba(205,255,248,.8)';g.lineWidth=1.3;g.stroke()}
+ for(let k=0;k<7;k++){ // tentáculos com garras
+  const base=k/7*6.2832+t*.35*(k%2?1:-1),N=14;let px=Math.cos(base)*S*1.1,py=Math.sin(base)*S*1.1;
+  for(let j=1;j<=N;j++){const f=j/N,a=base+Math.sin(t*3.2+j*.55+k*1.3)*.5*(.25+f),r=S*(1.1+f*(3.6+(k%3)*.9)),x=Math.cos(a)*r,y=Math.sin(a)*r;
+   g.strokeStyle=j%2?BSC2:BSC;g.lineWidth=Math.max(1.2,S*.75*(1-f));g.beginPath();g.moveTo(px,py);g.lineTo(x,y);g.stroke();px=x;py=y}
+  g.fillStyle='#d8fff7';for(let c=-1;c<=1;c++){const a=Math.atan2(py,px)+c*.5;g.beginPath();g.moveTo(px,py);g.lineTo(px+Math.cos(a-.2)*S*.5,py+Math.sin(a-.2)*S*.5);g.lineTo(px+Math.cos(a)*S*1.1,py+Math.sin(a)*S*1.1);g.lineTo(px+Math.cos(a+.2)*S*.5,py+Math.sin(a+.2)*S*.5);g.closePath();g.fill()}}
+ { // tronco curvado e cheio de espinhos, como um corpo de fera atrás dele
+  g.beginPath();const N=18;for(let k=0;k<=N;k++){const a=-Math.PI*.94+k/N*Math.PI*1.88,wob=1+Math.sin(t*4+k*1.7)*.09+(k%2?.16:-.05),x=Math.cos(a)*S*2.3*wob,y=Math.sin(a)*S*2*wob+S*.3;k?g.lineTo(x,y):g.moveTo(x,y)}g.closePath();g.fillStyle='rgba(3,40,46,.9)';g.fill();g.strokeStyle='rgba(31,242,207,.85)';g.lineWidth=2;g.stroke();
+  g.fillStyle='#0aa89b';for(let k=0;k<8;k++){const a=-Math.PI*.92+k*.27,r0=S*2,r1=S*(3+(k%3)*.55+Math.sin(t*5+k)*.3);g.beginPath();g.moveTo(Math.cos(a-.09)*r0,Math.sin(a-.09)*r0+S*.3);g.lineTo(Math.cos(a)*r1,Math.sin(a)*r1+S*.3);g.lineTo(Math.cos(a+.09)*r0,Math.sin(a+.09)*r0+S*.3);g.closePath();g.fill()}}
+ for(const sd of[-1,1]){ // braços gigantes com garras
+  g.save();const ax=sd*S*(3.3+Math.sin(t*2.7+sd)*.5),ay=S*(.5+Math.sin(t*3.3+sd*2)*.9);
+  g.strokeStyle='#04343a';g.lineWidth=S*.95;g.beginPath();g.moveTo(sd*S*.9,S*.4);g.quadraticCurveTo(sd*S*2.2,-S*1.3+Math.sin(t*2+sd)*S*.4,ax,ay);g.stroke();g.strokeStyle=BSC;g.lineWidth=S*.3;g.stroke();
+  g.translate(ax,ay);g.rotate(sd*(.7+Math.sin(t*4+sd)*.25));g.fillStyle='#0aa89b';g.beginPath();g.ellipse(0,0,S*.7,S*.55,0,0,7);g.fill();
+  g.fillStyle='#effffc';for(let c=0;c<5;c++){const a=-1.1+c*.55,L=S*(1.5+(c%2)*.5);g.beginPath();g.moveTo(Math.cos(a-.16)*S*.55,Math.sin(a-.16)*S*.55-S*.1);g.quadraticCurveTo(Math.cos(a)*L*.7+sd*S*.2,Math.sin(a)*L*.7,Math.cos(a+.2)*L*1.1,Math.sin(a+.2)*L*1.1);g.lineTo(Math.cos(a+.16)*S*.55,Math.sin(a+.16)*S*.55-S*.1);g.closePath();g.fill()}
+  g.restore()}
+ { // cabeça de fera deformada: chifres desiguais, 3 olhos de tamanhos diferentes, mandíbula aberta com dentes irregulares
+  g.save();g.translate(Math.sin(t*1.6)*S*.6,-S*3.1+Math.sin(t*2.3)*S*.25);g.rotate(Math.sin(t*1.9)*.24);const H=S*2.3,jw=.12+.4*Math.abs(Math.sin(t*4.1));g.scale(H,H);g.lineWidth=.045;
+  g.fillStyle='#0aa89b';g.strokeStyle='#bffff5';
+  g.beginPath();g.moveTo(-.62,-.7);g.quadraticCurveTo(-1.5,-1.0,-1.55,-1.95);g.quadraticCurveTo(-.95,-1.3,-.25,-.95);g.closePath();g.fill();g.stroke();
+  g.beginPath();g.moveTo(.55,-.78);g.quadraticCurveTo(1.05,-1.0,1.2,-1.45);g.quadraticCurveTo(.85,-1.2,.2,-.98);g.closePath();g.fill();g.stroke();
+  g.beginPath();g.moveTo(.9,-.4);g.lineTo(1.5,-.75);g.lineTo(1.05,-.1);g.closePath();g.fill();
+  g.fillStyle='#052d33';g.strokeStyle=BSC;g.beginPath();g.moveTo(-.85,.3);g.lineTo(-.75,.5+jw);g.quadraticCurveTo(0,.95+jw*1.3,.8,.55+jw);g.lineTo(.95,.28);g.closePath();g.fill();g.stroke();
+  const mg=g.createLinearGradient(0,.2,0,.9);mg.addColorStop(0,'#021417');mg.addColorStop(1,BSC2);g.fillStyle=mg;g.beginPath();g.moveTo(-.8,.3);g.lineTo(.9,.3);g.lineTo(.78,.5+jw);g.quadraticCurveTo(0,.7+jw*1.2,-.7,.48+jw);g.closePath();g.fill();
+  g.fillStyle='#effffc';for(let k=0;k<7;k++){const x=-.68+k*.23,h=.12+((k*37)%5)*.04;g.beginPath();g.moveTo(x-.07,.51+jw);g.lineTo(x,.5+jw-h);g.lineTo(x+.07,.51+jw);g.closePath();g.fill()}
+  g.fillStyle='#063a40';g.strokeStyle=BSC;g.beginPath();g.moveTo(-.95,.3);g.bezierCurveTo(-1.2,-.3,-.85,-.95,-.2,-1.02);g.bezierCurveTo(.45,-1.1,1.1,-.7,1.15,-.05);g.bezierCurveTo(1.2,.2,1,.33,.9,.3);g.lineTo(-.95,.3);g.closePath();g.fill();g.stroke();
+  g.fillStyle='#effffc';for(let k=0;k<7;k++){const x=-.78+k*.26,h=.12+((k*53)%6)*.05;g.beginPath();g.moveTo(x,.29);g.lineTo(x+.13,.3+h);g.lineTo(x+.26,.29);g.closePath();g.fill()}
+  g.shadowColor=BSC;g.shadowBlur=14;g.fillStyle='#eafffb';
+  g.save();g.translate(.45,-.38);g.rotate(-.3);g.beginPath();g.ellipse(0,0,.34,.17,0,0,7);g.fill();g.restore();
+  g.save();g.translate(-.5,-.28);g.rotate(.4);g.beginPath();g.ellipse(0,0,.2,.1,0,0,7);g.fill();g.restore();
+  g.beginPath();g.arc(-.02,-.66,.07,0,7);g.fill();g.shadowBlur=0;
+  const dx=Math.sin(t*3)*.04;g.fillStyle='#02181b';g.beginPath();g.ellipse(.45+dx,-.38,.05,.15,-.3,0,7);g.fill();g.beginPath();g.ellipse(-.5+dx,-.28,.035,.09,.4,0,7);g.fill();
+  g.strokeStyle='#021417';g.lineWidth=.09;g.beginPath();g.moveTo(.05,-.72);g.lineTo(.8,-.52);g.moveTo(-.85,-.55);g.lineTo(-.2,-.38);g.stroke();
+  g.strokeStyle=BSC;g.lineWidth=.025;g.beginPath();g.moveTo(.15,-1);g.lineTo(.25,-.8);g.lineTo(.1,-.7);g.moveTo(-.9,-.1);g.lineTo(-.65,0);g.lineTo(-.72,.15);g.stroke();
+  g.restore()}
+ for(let k=0;k<5;k++){const ph=Math.sin(t*3+k*2.1);if(ph>.82)continue; // olhos soltos na aura
+  const a=t*.55+k*1.26,r=S*(3.4+Math.sin(t*1.7+k)*.7);g.save();g.translate(Math.cos(a)*r,Math.sin(a)*r*.8);g.rotate(a+1.57);g.shadowColor=BSC;g.shadowBlur=8;g.fillStyle='#eafffb';g.beginPath();g.ellipse(0,0,S*.45,S*.2,0,0,7);g.fill();g.shadowBlur=0;g.fillStyle='#02181b';g.beginPath();g.ellipse(0,0,S*.07,S*.18,0,0,7);g.fill();g.restore()}
+ g.fillStyle='#c9fff6';for(let k=0;k<14;k++){const f=(t*.7+k*.137)%1,a=k*2.4+t*.2,r=S*(1.5+f*3.5);g.globalAlpha=fa*(1-f);g.beginPath();g.arc(Math.cos(a)*r,Math.sin(a)*r-f*S*2,1.6+(k%3),0,7);g.fill()}
+ g.restore()}
+function blSecShoot(q){ // precisão absurda: finaliza de primeira no canto oposto ao do goleiro, com a curva animalesca
+ const gx=q.t?0:PW,cy=PH/2,gk=players.find(o=>o.t!==q.t&&o.gk&&!o.off),ty=cy+((gk&&gk.y>cy)?-1:1)*GH*.36;let dx=gx-q.x,dy=ty-q.y;const l=Math.hypot(dx,dy)||1,pw=shotPw(q,1)*.9*blMl(q,'p');
+ ball.vx=dx/l*pw;ball.vy=dy/l*pw;ball.sp=0;ball.bs=0;beastShot(q);q.cool=.28;kgap=.18;q.flash=.15;lastT=q.t;lastP=q;burst(ball.x,ball.y,12,BSC,200,.5);sfx('kick',pw)}
+function blSecStart(q){
+ const sc=q.bl.sc;q.blSec=sc.dur;q.secOn=true;q.blSecN++;q.blSecP=0;q.secStl=0;q.secJt=0;q.secDuel=5;
+ let key='speed',bv=-1;for(const k of['speed','accel','strength','finishing','control','passing']){const v=myPlayer.a[k]||0;if(v>bv){bv=v;key=k}} // adaptação: acha a melhor arma do rival
+ q.secA0=Object.assign({},q.a);q.secM0=q.m;q.secAd=key;q.a[key]=Math.min(99,Math.max(q.a[key]||0,bv+6));if(key==='strength')q.m=.8+q.a.strength/99*.8;
+ q.blLab={s:'DESPERTAR SECRETO · '+sc.n,ic:'👁',c:BSC,t:3.8,m:3.8,big:true};
+ shake=Math.max(shake,18);ring(q.x,q.y,BSC,260,.9);ring(q.x,q.y,'#ffffff',150,.6);burst(q.x,q.y,56,BSC,420,1.1);burst(q.x,q.y,28,BSC2,260,.8);
+ popup(q.x,q.y-34,'ADAPTAÇÃO: '+BSN[key].toUpperCase());toast('👁 '+q.bl.n+' despertou o instinto de destruição!');
+ try{tone(80,.7,'sawtooth',.2);tone(160,.5,'square',.09,.06);tone(55,.9,'triangle',.18,.12)}catch(e){}}
+function blSecEnd(q){
+ if(q.secA0){Object.assign(q.a,q.secA0);q.m=q.secM0}q.secOn=false;q.blSec=0;ring(q.x,q.y,BSC2,120,.5);burst(q.x,q.y,18,BSC2,180,.6)}
+function blSecTick(q,d){
+ if(q.t!==1||!q.blAwk)return;
+ if(!(q.blSec>0)){ // gatilho secreto: pressão acumulada (perdendo, sofrendo gol) depois de despertar
+  if(q.secOn){blSecEnd(q);return}
+  if(state==='play'&&blCineT<=0&&q.blSecN<(blPh>=5?3:blPh>=4?2:1)){q.blSecP+=d*(1.2+(score[0]>score[1]?3:0)+(blPh-1)*.4)+(score[0]>blLast[0]?40:0);if(q.blSecP>=60)blSecStart(q)}
+  return}
+ if(state!=='play')return;
+ for(const o of players)if(o.secHit>0)o.secHit-=d;
+ if(q.stun>0)return;
+ const gx=q.t?0:PW,tg=carrier&&carrier.t!==q.t&&!carrier.gk?carrier:(q.secDuel>0&&dist(q,myPlayer)<650?myPlayer:null);q.secDuel-=d;
+ q.secJt-=d;if(q.secJt<=0){q.secJt=.22+Math.random()*.3;const sp=Math.hypot(q.vx,q.vy),ux=sp>20?q.vx/sp:q.fx,uy=sp>20?q.vy/sp:q.fy,sd=Math.random()<.5?-1:1,f=200+Math.random()*160;q.vx+=-uy*sd*f;q.vy+=ux*sd*f} // 1. instinto: movimento imprevisível
+ if(tg){const L=Math.min(.5,dist(q,tg)/700),tx=tg.x+(tg.vx||0)*L,ty=tg.y+(tg.vy||0)*L,dd=Math.hypot(tx-q.x,ty-q.y);if(dd>1&&dd<640){q.vx+=(tx-q.x)/dd*900*d;q.vy+=(ty-q.y)/dd*900*d}} // 2. leitura: antecipa o rival e a disputa
+ q.secStl-=d;if(q.secStl<=0&&carrier&&carrier.t!==q.t&&!carrier.gk&&dist(q,carrier)<q.r+carrier.r+24){q.secStl=.8;carrier.stun=Math.max(carrier.stun||0,.55);const fx=q.fx||1,fy=q.fy||0;ball.x=q.x+fx*(q.r+ball.r+1);ball.y=q.y+fy*(q.r+ball.r+1);ball.vx=q.vx;ball.vy=q.vy;burst(ball.x,ball.y,14,BSC,220,.5);popup(q.x,q.y,'Devorou!')}
+ if(carrier===q){for(const o of players){if(o.t===q.t||o.gk||o.off||o.stun>0||o.secHit>0)continue;const dd=dist(o,q);if(dd<115){ // 3. drible destrutivo: usa o próprio equilíbrio do marcador contra ele
+   o.secHit=1.1;o.x+=(o.vx||0)*.07;o.y+=(o.vy||0)*.07;o.stun=.6;const nx=(o.x-q.x)/(dd||1),ny=(o.y-q.y)/(dd||1),sd=Math.random()<.5?-1:1;q.vx+=(q.t?-1:1)*330-ny*sd*300;q.vy+=nx*sd*300;burst(o.x,o.y,12,BSC,200,.5);ring(o.x,o.y,BSC2,60,.35)}}
+  if(q.cool<=0&&kgap<=0&&Math.hypot(gx-q.x,PH/2-q.y)<PW*.36&&dist(q,ball)<=reach(q)+2)blSecShoot(q)} // 4. precisão absurda
+}
 function blFxTick(p,d){const X=p.blX;if(!X)return;
  if(X.mg){const dd=dist(p,ball);if(dd<X.mg&&dd>p.r){const k=(1-dd/X.mg)*1100*d;ball.vx+=(p.x-ball.x)/dd*k;ball.vy+=(p.y-ball.y)/dd*k}} // buraco negro: puxa a bola
  if(X.ch&&carrier!==p){const tx=ball.x+ball.vx*.35,ty=ball.y+ball.vy*.35,dd=Math.hypot(tx-p.x,ty-p.y);if(dd<560&&dd>1){p.vx+=(tx-p.x)/dd*560*d;p.vy+=(ty-p.y)/dd*560*d}} // metavisão: antecipa a bola
@@ -2040,11 +2150,12 @@ function blUse(p,slot){if(!p||!p.bl||phase!=='play'||blCineT>0)return false;cons
  if(eff.ct){const gx=p.t?0:PW,dx=gx-p.x,dy=PH/2-p.y,l=Math.hypot(dx,dy)||1;p.vx+=dx/l*eff.ct*.6;p.vy+=dy/l*eff.ct}
  if(eff.st){for(const q of players)if(q.t!==p.t&&!q.gk&&dist(q,p)<(eff.sr||100))q.stun=eff.st}
  blCine(e0.n,e0.d,p.nm||p.bl.n,p,false);if(p===myPlayer)popup(p.x,p.y,e0.n.toUpperCase());return true}
-function blTouch(p){if(!p.bl)return;const X=p.blXT>0&&p.blX?p.blX:null;if(X&&X.rs){ball.vx=0;ball.vy=0;ball.sp=0;return}const f=Math.min(X&&X.dp!=null?X.dp:1,p.blPas&&p.blPas.dp!=null?p.blPas.dp:1);if(f<1){ball.vx*=f;ball.vy*=f}}
+function blTouch(p){ball.bs=0;if(!p.bl)return;const X=p.blXT>0&&p.blX?p.blX:null;if(X&&X.rs){ball.vx=0;ball.vy=0;ball.sp=0;return}const f=Math.min(X&&X.dp!=null?X.dp:1,p.blPas&&p.blPas.dp!=null?p.blPas.dp:1);if(f<1){ball.vx*=f;ball.vy*=f}}
 function blTick(d){const UI=blM&&!online;const HU=UI&&!!myPlayer.bl;$('bldp').hidden=!HU;$('blbt').hidden=!HU;if(!UI)return;
  const frozen=blCineT>0;if(frozen){blCineT-=d;if(blCineT<=0){$('blcine').classList.remove('on');cv.style.transform=''}}
- if(phase==='play'&&!frozen){for(const p of players){if(!p.bl)continue;if(p.blLab&&p.blLab.t>0)p.blLab.t-=d;if(p.blXT>0)p.blXT-=d;if(p.blCD)for(let k=0;k<3;k++)if(p.blCD[k]>0)p.blCD[k]-=d}
+ if(phase==='play'&&!frozen){for(const p of players){if(!p.bl)continue;if(p.blLab&&p.blLab.t>0)p.blLab.t-=d;if(p.blXT>0)p.blXT-=d;if(p.blSec>0)p.blSec-=d;if(p.blCD)for(let k=0;k<3;k++)if(p.blCD[k]>0)p.blCD[k]-=d}
   for(const p of players)if(p.bl&&p.blXT>0&&p.blX)blFxTick(p,d);
+  for(const q of players)if(q.bl&&q.bl.sc)blSecTick(q,d);
   const ci=blCh(),dp=blDp(ci);
   if(!dp.aw&&myPlayer.bl){dp.d=Math.min(100,dp.d+d*.8);if(score[0]>blLast[0])dp.d=Math.min(100,dp.d+25*(score[0]-blLast[0]));if(dp.d>=100){dp.aw=true;dp.d=100;myPlayer.blPas=myPlayer.bl.ps;myPlayer.blAw=myPlayer.bl.aw;myPlayer.blAwk=true;burst(myPlayer.x,myPlayer.y,40,BLC[blCh()][1],320,.9);blCine('DESPERTAR',myPlayer.bl.ps.n,myPlayer.bl.n,myPlayer,true);toast('🔥 '+myPlayer.bl.n+' despertou!');save()}}
   for(const q of players){if(q.t!==1||!q.bl||q.blAwk)continue;q.blD=(q.blD||0)+d*BLD[blPh-1].aw+(score[0]>blLast[0]?25:0);if(q.blD>=100&&blCineT<=0){q.blAwk=true;q.blPas=q.bl.ps;q.blAw=q.bl.aw;burst(q.x,q.y,40,q.blC[1],320,.9);blCine('DESPERTAR',q.bl.ps.n,q.bl.n,q,true);toast('🔥 '+q.bl.n+' despertou!');break}}
@@ -2079,7 +2190,7 @@ function blRender(){const el=$('blkl'),ch=$('blchr');ch.innerHTML='';
 function blStart(f){blRun=true;blPh=f;show('blk',false);startMatch()}
 function blApply(){blGap=5;blCineT=0;$('blcine').classList.remove('on');cv.style.transform='';const F=BLP[blPh-1],D=BLD[blPh-1],bots=players.filter(z=>z.t===1&&!z.gk&&!z.off),ci=blCh(),me=BLR[ci],dp=blDp(ci);blLast=[score[0],score[1]];
  players.filter(z=>z.t===1&&z.gk).forEach(z=>{z.a=base(D.gk,D.gk,D.gk)});
- F.bots.forEach((c,k)=>{const q=bots[k];if(!q)return;const a=base(F.lv,F.lv,F.lv);for(const key in c.b)a[key]=Math.min(99,(a[key]||0)+c.b[key]);for(const key of['speed','accel','stamina'])a[key]=Math.min(99,(a[key]||0)+D.sp);a.control=Math.max(a.control||0,F.lv-6);q.a=a;q.m=q.g0?q.m:.8+a.strength/99*.8;q.bl=c;q.blC=BLC[BLR.indexOf(c)];q.blAwk=false;q.blCD=[0,0,0];q.blX=null;q.blXT=0;q.blPas=null;q.blAw=null;q.blD=D.d0+Math.random()*40;q.nm=c.n;q.blLab=null;popup(q.x,q.y,c.s.n.toUpperCase());burst(q.x,q.y,10,'#4fc3ff',200,.5)});
+ F.bots.forEach((c,k)=>{const q=bots[k];if(!q)return;const a=base(F.lv,F.lv,F.lv);for(const key in c.b)a[key]=Math.min(99,(a[key]||0)+c.b[key]);for(const key of['speed','accel','stamina'])a[key]=Math.min(99,(a[key]||0)+D.sp);a.control=Math.max(a.control||0,F.lv-6);q.a=a;q.m=q.g0?q.m:.8+a.strength/99*.8;q.bl=c;q.blC=BLC[BLR.indexOf(c)];q.blAwk=false;q.blCD=[0,0,0];q.blX=null;q.blXT=0;q.blPas=null;q.blAw=null;q.blD=D.d0+Math.random()*40;q.nm=c.n;q.blLab=null;q.blSec=0;q.blSecP=20;q.blSecN=0;q.secOn=false;popup(q.x,q.y,c.s.n.toUpperCase());burst(q.x,q.y,10,'#4fc3ff',200,.5)});
  myPlayer.bl=null;myPlayer.blC=null;myPlayer.blAwk=false;myPlayer.blCD=[0,0,0];myPlayer.blX=null;myPlayer.blXT=0;myPlayer.blPas=null;myPlayer.blAw=null;
  toast('🔵 '+F.n)}
 $('blb').addEventListener('click',()=>{blRender();show('mn',false);show('blk',true)});
@@ -2625,7 +2736,8 @@ function draw(){
  if(pu.turbo>0){g.strokeStyle='#7de3ff';g.lineWidth=3;g.beginPath();g.arc(ctrl.x,ctrl.y,ctrl.r+9+pulse,0,7);g.stroke()}
  if((ST.own.aur||ST.own.aub)&&!online){const ac=ST.own.aur?'255,210,63':'125,227,255';g.beginPath();g.arc(myPlayer.x,myPlayer.y,myPlayer.r+9+pulse,0,7);g.fillStyle='rgba('+ac+',.28)';g.fill();g.strokeStyle='rgba('+ac+',.85)';g.lineWidth=2;g.stroke()}
  g.strokeStyle='#fff';g.lineWidth=2;g.beginPath();g.arc(ctrl.x,ctrl.y,ctrl.r+5+pulse,0,7);g.stroke(); // jogador controlado
- for(const p of players){if(p.blC&&(p.blXT>0||p.blAwk)){const hot=!!p.blAwk,cc=p.blC[hot?1:0];g.beginPath();g.arc(p.x,p.y,p.r+(hot?9:7)+pulse*(hot?1.5:.6),0,7);g.strokeStyle=cc;g.lineWidth=hot?5:3;g.shadowColor=p.blC[0];g.shadowBlur=hot?24:12;g.stroke();g.shadowBlur=0}blFx(p,g);blAbFx(p,g);if(cmT[p.t]>0&&!p.gk&&!duel){g.beginPath();g.arc(p.x,p.y,p.r+4+pulse,0,7);g.strokeStyle=p.t?'rgba(255,120,120,.7)':'rgba(111,227,154,.8)';g.lineWidth=2.5;g.stroke()}if(!(HC.get('p3d')&&HC.get('p3d').on)){const cc=p.t===1&&pu.gelo>0?'#9fdcff':p.col;if(p.gk&&(p.fall>0||p.dvT>0)){if(p.fb)g.globalAlpha=.8;drawGKMotion(p,cc);g.globalAlpha=1}else{if(cup3()||kg||bch)col3(p,cc);kit(p,cc)}}if(p.ab){const rd=p.abT>0?1-p.abT/ABC[p.ab]:1;g.beginPath();g.arc(p.x,p.y,p.r+5,-1.57,-1.57+6.283*Math.max(.02,Math.min(1,rd)));{const vc=(VC[p.ab]||[])[0]||'#ffd23f';g.strokeStyle=rd>=1?vc:'#7fa8ff';g.shadowColor=vc;g.shadowBlur=rd>=1?10+pulse*3:0;g.lineWidth=rd>=1?4:3;g.stroke();g.shadowBlur=0}}
+ {const tb=performance.now()/1000;for(const p of players)if(p.blSec>0&&p.bl&&p.bl.sc)blBeast(g,p,tb)} // aura do despertar secreto atrás de todos os jogadores
+ for(const p of players){if(p.blC&&(p.blXT>0||p.blAwk)){const hot=!!p.blAwk,cc=p.blSec>0?'#1ff2cf':p.blC[hot?1:0];g.beginPath();g.arc(p.x,p.y,p.r+(hot?9:7)+pulse*(hot?1.5:.6),0,7);g.strokeStyle=cc;g.lineWidth=hot?5:3;g.shadowColor=p.blSec>0?'#0be0e8':p.blC[0];g.shadowBlur=hot?24:12;g.stroke();g.shadowBlur=0}blFx(p,g);blAbFx(p,g);if(cmT[p.t]>0&&!p.gk&&!duel){g.beginPath();g.arc(p.x,p.y,p.r+4+pulse,0,7);g.strokeStyle=p.t?'rgba(255,120,120,.7)':'rgba(111,227,154,.8)';g.lineWidth=2.5;g.stroke()}if(!(HC.get('p3d')&&HC.get('p3d').on)){const cc=p.t===1&&pu.gelo>0?'#9fdcff':p.col;if(p.gk&&(p.fall>0||p.dvT>0)){if(p.fb)g.globalAlpha=.8;drawGKMotion(p,cc);g.globalAlpha=1}else{if(cup3()||kg||bch)col3(p,cc);kit(p,cc)}}if(p.ab){const rd=p.abT>0?1-p.abT/ABC[p.ab]:1;g.beginPath();g.arc(p.x,p.y,p.r+5,-1.57,-1.57+6.283*Math.max(.02,Math.min(1,rd)));{const vc=(VC[p.ab]||[])[0]||'#ffd23f';g.strokeStyle=rd>=1?vc:'#7fa8ff';g.shadowColor=vc;g.shadowBlur=rd>=1?10+pulse*3:0;g.lineWidth=rd>=1?4:3;g.stroke();g.shadowBlur=0}}
   ;
   g.fillStyle='rgba(0,0,0,.3)';g.beginPath();g.arc(p.x+p.fx*p.r*.62,p.y+p.fy*p.r*.62,2.4,0,7);g.fill();
   {const dk=lum(p.col)>150;g.font='700 11px "Trebuchet MS",sans-serif';g.textAlign='center';g.lineJoin='round';g.lineWidth=3;g.strokeStyle=dk?'rgba(255,255,255,.6)':'rgba(0,0,0,.5)';g.strokeText((p.gk?1:NUM[p.i]),p.x,p.y+4);g.fillStyle=dk?'#1b1b1b':'#fff';g.fillText((p.gk?1:NUM[p.i]),p.x,p.y+4)}if(p.nm){g.font='700 10px sans-serif';g.lineWidth=3;g.strokeStyle='rgba(0,0,0,.6)';g.strokeText(p.nm,p.x,p.y+p.r+12);g.fillStyle='#fff';g.fillText(p.nm,p.x,p.y+p.r+12)}}
@@ -2639,7 +2751,7 @@ function draw(){
  if(kBuf>0||inp.kick){g.beginPath();g.arc(ctrl.x,ctrl.y,ctrl.r+5,0,7);g.strokeStyle='#fff';g.lineWidth=3;g.stroke()} // anel branco = chute armado (Haxball)
  const bv=Math.hypot(ball.vx,ball.vy);if(bv>250){g.strokeStyle='rgba(255,255,255,.35)';g.lineWidth=ball.r*1.3;g.lineCap='round';g.beginPath();g.moveTo(ball.x,ball.y);g.lineTo(ball.x-ball.vx*.06,ball.y-ball.vy*.06);g.stroke();g.lineCap='butt'}
  if((ST.own.trl||(lastP&&lastP.fa&&lastP.a===lastP.fa))&&bv>130){g.lineCap='round';g.strokeStyle='rgba(255,120,30,.45)';g.lineWidth=ball.r*2.2;g.beginPath();g.moveTo(ball.x,ball.y);g.lineTo(ball.x-ball.vx*.12,ball.y-ball.vy*.12);g.stroke();g.strokeStyle='rgba(255,220,80,.65)';g.lineWidth=ball.r*1.1;g.beginPath();g.moveTo(ball.x,ball.y);g.lineTo(ball.x-ball.vx*.08,ball.y-ball.vy*.08);g.stroke();g.lineCap='butt'}
- if(fire>0){g.beginPath();g.arc(ball.x,ball.y,ball.r+7,0,7);g.fillStyle='rgba(255,140,40,.55)';g.fill()}if(spamCnt>=2&&spamT>0){g.beginPath();g.arc(ball.x,ball.y,ball.r+4+spamCnt*2.2,0,7);g.strokeStyle='rgba(255,138,61,'+(.25+spamCnt*.13)+')';g.lineWidth=1.5+spamCnt*.5;g.stroke()}if(bv>380){g.beginPath();g.arc(ball.x,ball.y,ball.r+5,0,7);g.fillStyle='rgba(255,255,255,.13)';g.fill()}if(crzEv==='ghost')g.globalAlpha=.1;if(kg||bch)col3(ball,'#cfd4da',9);drawBall();g.globalAlpha=1;
+ if(fire>0){g.beginPath();g.arc(ball.x,ball.y,ball.r+7,0,7);g.fillStyle='rgba(255,140,40,.55)';g.fill()}if(spamCnt>=2&&spamT>0){g.beginPath();g.arc(ball.x,ball.y,ball.r+4+spamCnt*2.2,0,7);g.strokeStyle='rgba(255,138,61,'+(.25+spamCnt*.13)+')';g.lineWidth=1.5+spamCnt*.5;g.stroke()}if(bv>380){g.beginPath();g.arc(ball.x,ball.y,ball.r+5,0,7);g.fillStyle='rgba(255,255,255,.13)';g.fill()}if(crzEv==='ghost')g.globalAlpha=.1;if(kg||bch)col3(ball,'#cfd4da',9);if(ball.bs)blBeastTrail(g);drawBall();g.globalAlpha=1;
  if(state==='pen'&&pk&&pk.ph==='wait'&&pk.t===0&&pk.n===0){const ty=PH/2+cl1(stick.on?inp.y:kb()[1])*(GH/2-18);g.setLineDash([8,8]);g.strokeStyle='rgba(255,255,255,.75)';g.lineWidth=2;g.beginPath();g.moveTo(ball.x,ball.y);g.lineTo(PW,ty);g.stroke();g.setLineDash([]);g.beginPath();g.arc(PW,ty,8,0,7);g.fillStyle='#ffd23f';g.fill()}
  for(const q of fxs){g.globalAlpha=Math.max(0,q.l/q.m);g.fillStyle=q.c;g.fillRect(q.x,q.y,q.s,q.s)}g.globalAlpha=1;
  /* HUD em pixels de tela */
