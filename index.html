@@ -1521,18 +1521,18 @@ const FLD=[[780,440,120],[1400,780,160],[1800,1000,190],[1100,600,150]]; // 4º 
 function setField(i){fldNow=i;const f=FLD[i]||FLD[1];PW=f[0];PH=f[1];GH=f[2];cam.x=PW/2;cam.y=PH/2;cam.i=0;resize()}
 /* ---------- HABILIDADES DOS BOTS: Decisão Final (aos 80 min: +10 finalização e +10 controle) e Esticada de Perna (intercepta passe/chute, depois fica atordoado) ---------- */
 AB.fin='Decisão final (aos 80 min: +10 finalização e controle)';AB.est='Esticada de perna (alcance maior: bloqueia o chute e já toca para o companheiro)';
-const LEG={T:.5,L:118,rec:.42},rings=[];let finFl=0;
-function legLen(p){const e=LEG.T-p.legT,x=Math.max(0,Math.min(1,e<.16?e/.16:p.legT<.16?p.legT/.16:1));return LEG.L*(1-Math.pow(1-x,3))} // estica rápido, segura e recolhe
+const LEGPHYS={T:.5,L:118,rec:.42},rings=[];let finFl=0;
+function legLen(p){const e=LEGPHYS.T-p.legT,x=Math.max(0,Math.min(1,e<.16?e/.16:p.legT<.16?p.legT/.16:1));return LEGPHYS.L*(1-Math.pow(1-x,3))} // estica rápido, segura e recolhe
 function ring(x,y,c,r1,l){rings.push({x,y,c,r:6,r1,l,m:l})} // onda de choque
 function legStart(p){if(p.legT>0||p.stun>0)return;const dx=ball.x+ball.vx*.1-p.x,dy=ball.y+ball.vy*.1-p.y,l=Math.hypot(dx,dy)||1;
- p.lx=dx/l;p.ly=dy/l;p.legT=LEG.T;p.legHit=false;p.kb=LEG.T;p.vx+=p.lx*170;p.vy+=p.ly*170; // mira na bola e dá o bote
+ p.lx=dx/l;p.ly=dy/l;p.legT=LEGPHYS.T;p.legHit=false;p.kb=LEGPHYS.T;p.vx+=p.lx*170;p.vy+=p.ly*170; // mira na bola e dá o bote
  ring(p.x,p.y,'#9fe8ff',p.r+36,.35);burst(p.x,p.y,10,'#9fe8ff',200,.4);hiss(.15,.3)}
 function estAim(p){ // só estica quando vale a pena: chute/passe perigoso do adversário que vai bater na perna na hora certa
  if(p.legT>0||p.stun>0||state!=='play'||carrier===p||!lastP||lastP.t===p.t)return false;
  const sp=Math.hypot(ball.vx,ball.vy);if(sp<160)return false;
  const ux=ball.vx/sp,uy=ball.vy/sp,rx=p.x-ball.x,ry=p.y-ball.y,al=rx*ux+ry*uy;
- if(al<p.r||Math.abs(rx*uy-ry*ux)>LEG.L*.62)return false; // a bola precisa passar pela linha que a perna alcança
- const tt=(al-p.r-LEG.L*.7)/sp;if(tt<.03||tt>.26)return false; // a perna leva 0,16 s para esticar: começa na hora certa
+ if(al<p.r||Math.abs(rx*uy-ry*ux)>LEGPHYS.L*.62)return false; // a bola precisa passar pela linha que a perna alcança
+ const tt=(al-p.r-LEGPHYS.L*.7)/sp;if(tt<.03||tt>.26)return false; // a perna leva 0,16 s para esticar: começa na hora certa
  const og=p.t?PW:0,yg=ball.y+ball.vy/(ball.vx||1e-9)*(og-ball.x);
  const shot=(og-ball.x)*ball.vx>0&&Math.abs(yg-PH/2)<GH/2+70&&Math.abs(og-ball.x)<PW*.5; // chute indo no gol
  return shot||Math.abs(og-p.x)<PW*.4} // ou passe/chute perigoso quando o bot está perto do próprio gol
@@ -1558,7 +1558,7 @@ function abStep(dt){
     const tx=p.x+p.lx*(p.r+ball.r+6),ty=p.y+p.ly*(p.r+ball.r+6);ball.vx=ball.vx*.08+(tx-ball.x)*2.4;ball.vy=ball.vy*.08+(ty-ball.y)*2.4;ball.sp=0;
     if(!p.legHit){p.legHit=true;legClear(p);popup(cx,cy,sp>420?'🦵 BLOQUEOU O CHUTE!':'🦵 Interceptou!');ring(cx,cy,'#ffffff',70,.4);ring(cx,cy,'#9fe8ff',105,.55);
      burst(cx,cy,22,'#ffffff',280,.45);burst(cx,cy,14,'#9fe8ff',200,.5);shake=Math.max(shake,sp>420?9:5);hiss(.2,.35);tone(180,.18,'triangle',.18)}}
-   if(p.legT<=0){p.legT=0;p.stun=p.legHit?.2:LEG.rec;p.vx*=.3;p.vy*=.3;burst(p.x,p.y-p.r,8,'#ffd23f',120,.5)}}} // esticou: fica atordoado e sem tocar na bola
+   if(p.legT<=0){p.legT=0;p.stun=p.legHit?.2:LEGPHYS.rec;p.vx*=.3;p.vy*=.3;burst(p.x,p.y-p.r,8,'#ffd23f',120,.5)}}} // esticou: fica atordoado e sem tocar na bola
 }
 function drawLeg(p){const l=legLen(p),sx=p.x+p.lx*p.r*.5,sy=p.y+p.ly*p.r*.5,ex=p.x+p.lx*(p.r+l),ey=p.y+p.ly*(p.r+l);
  g.save();g.lineCap='round';
