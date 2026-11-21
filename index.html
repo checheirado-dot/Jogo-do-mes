@@ -173,7 +173,6 @@ window.HC=(()=>{const mods={},st={screen:'loading'},subs=[];
     <fieldset><legend>Seu estilo de jogo</legend><div class="seg w" id="stg"></div></fieldset>
     <button class="cta" id="go" type="button">Jogar</button>
     <button class="ghost" id="kgb" type="button">👑 Rei da Quadra</button>
-    <button class="ghost" id="bsb" type="button">🏖 Futebol de Areia 2v2</button>
     <button class="ghost" id="blb" type="button">🔵 Blue Lock · Fases</button>
     <button class="ghost" id="crz" type="button">🤪 Modo Maluco</button>
     <button class="ghost" id="pkb" type="button">Disputa de pênaltis</button>
@@ -305,7 +304,6 @@ window.HC=(()=>{const mods={},st={screen:'loading'},subs=[];
  <div class="card sm" style="max-height:100%;overflow:auto">
   <h2 id="omt">Modo da partida</h2>
   <fieldset><legend>Formato</legend><div class="seg" data-g="n"><button class="chip" type="button" data-v="1">1x1</button><button class="chip" type="button" data-v="2">2x2</button><button class="chip" type="button" data-v="3">3x3</button></div></fieldset>
-  <fieldset><legend>Esporte</legend><div class="seg" data-g="bs"><button class="chip" type="button" data-v="0">⚽ Campo</button><button class="chip" type="button" data-v="1">🏖 Areia 2v2</button></div></fieldset>
   <fieldset><legend>Campo</legend><div class="seg" data-g="fl"><button class="chip" type="button" data-v="0">Pequeno</button><button class="chip" type="button" data-v="1">Médio</button><button class="chip" type="button" data-v="2">Grande</button></div></fieldset>
   <fieldset><legend>Modo</legend><div class="seg w" data-g="tg"><button class="chip" type="button" data-v="0">Clássico</button><button class="chip" type="button" data-v="1">Gol de ouro</button><button class="chip" type="button" data-v="3">Primeiro a 3</button><button class="chip" type="button" data-v="5">Primeiro a 5</button></div></fieldset>
   <fieldset><legend>Duração</legend><div class="seg w" data-g="mins"><button class="chip" type="button" data-v="1.5">1,5 min</button><button class="chip" type="button" data-v="2">2 min</button><button class="chip" type="button" data-v="3">3 min</button><button class="chip" type="button" data-v="4">4 min</button></div></fieldset>
@@ -1329,7 +1327,7 @@ let rtc=null,LR=null,unR=null,lbT=0;const LB={code:'',rc:'',me:'',h:'',g:'',gp:n
 const OM={n:3,fl:1,tg:0,mins:3,df:'normal',tr:0,bs:0},LINK='https://claude.ai/artifact/6NTNzA3d7QwTkkGyKZA2ic';
 const omClean=o=>{o=o||{};const n=+o.n,fl=+o.fl,tg=+o.tg,mins=+o.mins;return{df:DIFFS[o.df]?o.df:'normal',tr:+o.tr===1?1:0,bs:+o.bs===1?1:0,n:[1,2,3].includes(n)?n:3,fl:[0,1,2].includes(fl)?fl:1,tg:[0,1,3,5].includes(tg)?tg:0,mins:[1.5,2,3,4].includes(mins)?mins:3}};
 const trLine=()=>(!ST.tr||ST.tr.st!==0)?'Novo torneio':RN[ST.tr.r]+' · Rival: '+TT[trOpp()].n;
-const omText=o=>(o.bs?'🏖 Areia 2v2':o.tr?'🏆 Torneio':o.n+'x'+o.n)+' · '+DIFFS[o.df].n+' · Campo '+['pequeno','médio','grande'][o.fl]+' · '+(o.tg===0?'Clássico':o.tg===1?'Gol de ouro':'Primeiro a '+o.tg)+' · '+String(o.mins).replace('.',',')+' min';
+const omText=o=>(o.tr?'🏆 Torneio':o.n+'x'+o.n)+' · '+DIFFS[o.df].n+' · Campo '+['pequeno','médio','grande'][o.fl]+' · '+(o.tg===0?'Clássico':o.tg===1?'Gol de ouro':'Primeiro a '+o.tg)+' · '+String(o.mins).replace('.',',')+' min';
 function omSync(){document.querySelectorAll('#om [data-g]').forEach(g=>g.querySelectorAll('.chip').forEach(b=>b.setAttribute('aria-pressed',String((g.dataset.g==='df'?b.dataset.v:+b.dataset.v)===OM[g.dataset.g]))));if(OM.tr&&(!ST.tr||ST.tr.st!==0))trNew();$('omtx').textContent=omText(OM)+(OM.tr?' · '+trLine():'');$('omtl').innerHTML=OM.tr?trHtml():''}
 var fldNow=1;
 const ICE=[{urls:'stun:stun.l.google.com:19302'},{urls:'stun:stun1.l.google.com:19302'}];
@@ -1522,7 +1520,7 @@ function upd(dt){
   score[s0]++;if(wasTied){finalGoalFx={t:3.2,team:s0};}if(s0===0&&!online){ad.side[ball.y<PH/2?0:1]+=2.5;ad.cor=ad.cor*.6+Math.sign(ball.y-PH/2||1)*.4;if(lastP===myPlayer&&PW-mstat.sx>450)ad.lng=Math.min(1,ad.lng+.3)}if(!online&&!own)lrnGoal(s0);ko=1-s0;state='goal';tmr=1.8;rep=online?null:rbuf.slice();rbuf=[];
   msg=own?'Gol contra':lastP===myPlayer?'GOL SEU!':s0===0?'GOL!':'Gol do rival';
   if(!own&&lastP===myPlayer){mstat.goals++;ST.xp+=20;ST.coins+=5*(dbl?2:1);if(PW-mstat.sx>450)mstat.long++;if(clock<30)mstat.early++;toast('+20 XP · +5 🪙')}
- if(!own&&tour&&!online)tstReal(lastP,asst);
+ if(blM&&!online)blGoal(lastP,asst,own);if(!own&&tour&&!online)tstReal(lastP,asst);
   scorer=!own&&lastP&&lastP.nm?lastP.nm.replace(' ★',''):'';cheer(s0);return}
  if(state==='play'){if(!blM||blPh===6)clock+=dt*(kg?45:90)/((online?OM.mins:cfg.mins)*60);if(clock>=lim){if(chal>=0&&lim===90&&score[0]===score[1]){lim=100;toast('⏱ PRORROGAÇÃO · gol de ouro!');sfx('whistle')}else if((!online||tour)&&score[0]===score[1]&&!(tour&&ST.tr&&ST.tr.r===0)){clock=lim;startPen()}else{clock=lim;state='end';finish()}}}}
 
@@ -2020,7 +2018,7 @@ function renderLocker(sw){ // Vestiário: cartão do jogador, estilos, camisa, e
  $('lkm').innerHTML='<span class="sub" style="width:100%">'+ST.bd.length+'/'+BD.length+' conquistadas</span>'+BD.map((b,i)=>ST.bd.includes(i)?'<span class="pill" style="border-color:'+b.c+'">🏅 '+b.n+'</span>':'').join('');renderLocker(sw)}
 function showMenu(){HC.set('screen','menu');blM=false;L4=false;blCineT=0;$('blcine').classList.remove('on');cv.style.transform='';crzEnd();crz=false;kg=rk=false;if(rd!==null){cfg.diff=rd;rd=null}leaveRoom();pickMs();save();phase='menu';clearInput();syncMenu();show('ol',false);show('en',false);show('pz',false);show('mn',true)}
 let beach2=false;
-function startMatch0(){const b2=beach2;beach2=false;const BLN=blRun;blRun=false;blM=BLN&&!online;L4=blM;bch=(b2&&!online)||(online&&!!(host?OM.bs:(LB.o&&LB.o.bs)));if(blM&&!(BLP[blPh-1]&&BLP[blPh-1].jp))bch=true;bWalk=null;pickWx();pitchC=null;if(online&&!host){$('ed').textContent='Aguardando o anfitrião...';return}
+function startMatch0(){const b2=beach2;beach2=false;const BLN=blRun;blRun=false;blM=BLN&&!online;L4=blM;bch=false;if(blM&&!(BLP[blPh-1]&&BLP[blPh-1].jp))bch=true;bWalk=null;pickWx();pitchC=null;if(online&&!host){$('ed').textContent='Aguardando o anfitrião...';return}
  if(kg||rk){if(rd===null)rd=cfg.diff;cfg.diff=tierOf(dynL())}else if(online){if(rd===null)rd=cfg.diff;cfg.diff=OM.df}else if(rd!==null){cfg.diff=rd;rd=null}
  if(online){chal=-1;duel=false;tour=!!OM.tr;kg=rk=false}if(tour&&(!ST.tr||ST.tr.st!==0))trNew();if(online)mi++;if(online||duel||tour||chal>=0||kg||rk)crz=false;crzEnd();crzNx=4;audio();if(AC&&AC.resume)AC.resume();
  show('mn',false);show('en',false);show('pz',false);show('ol',false);
@@ -2032,7 +2030,7 @@ function pauseGame(){if(phase!=='play'||online)return;phase='pause';HC.set('scre
 function resume(){if(phase!=='pause')return;show('pz',false);phase='play'}
 function finish(){HC.set('screen','fim');crzEnd();
  const pW=pkw>=0?pkw===0:score[0]>score[1],pD=pkw<0&&score[0]===score[1],pL=pkw>=0?pkw===1:score[0]<score[1];
- if(blM&&pW){const S=blS();if(blPh<6){if(blPh>=S.ph){S.ph=Math.min(5,blPh+1);if(blPh<5)toast('🔓 Fase '+(blPh+1)+' liberada!')}if(blPh===5){if(!S.done)toast('🏆 Blue Lock concluído! 🇯🇵 Japão Sub-20 liberado!');S.done=true}}else toast('🇯🇵 Japão Sub-20 derrotado!')}ST.played++;if(pW)ST.wins++;else if(pD)ST.draws++;
+ if(blM&&pW){const S=blS();if(blPh<6){if(blPh>=S.ph){S.ph=Math.min(5,blPh+1);if(blPh<5)toast('🔓 Fase '+(blPh+1)+' liberada!')}if(blPh===5){if(!S.done)toast('🏆 Blue Lock concluído! 🇯🇵 Japão Sub-20 liberado!');S.done=true}}else toast('🇯🇵 Japão Sub-20 derrotado!')}if(blM&&!online)blPlusFin(pW);ST.played++;if(pW)ST.wins++;else if(pD)ST.draws++;
  ST.goals+=mstat.goals;ST.best=Math.max(ST.best,score[0]-score[1]);let sh='';const gn=Math.round(((chal>=0&&pW?100:0)+20+(pW?50:pD?20:0))*(cfg.diff==='extremo'?2:cfg.diff==='inter'?1.5:1));ST.xp+=gn*(xpd?2:1);ST.coins+=Math.round(gn*.5)*(dbl?2:1);if(duel&&pW&&!ST.bd.includes(dsel)){ST.bd.push(dsel);sh=' · 🏅 Bola de Ouro: '+BD[dsel].n}if(chal>=0&&pW&&!ST.sh.includes(chal)){ST.sh.push(chal);ST.eq=chal;sh=' · 👕 Camisa '+T[chal].n+' conquistada!'}if(kg){if(pW){kgS=Math.max(0,kgS)+1;ST.kb=Math.max(ST.kb||0,kgS);ST.coins+=kgS*5;sh=' · 👑 Continua em campo! Sequência '+kgS+' · +'+kgS*5+' 🪙 · próximo rival nível '+dynL()}else{sh=' · 👑 Fim do reinado: '+kgS+' vitórias seguidas (recorde '+(ST.kb||0)+')';kgS=0}}
  if(rk){const me=myP(),ex=1/(1+Math.pow(10,(rkO.p-me)/400)),d=Math.round(32*((pW?1:0)-ex));ST.rp=Math.max(0,me+d);ST.rg=(ST.rg||0)+1;if(pW)ST.rw=(ST.rw||0)+1;sh=' · 🌍 '+(d>=0?'+':'')+d+' pts · Ranking: '+ST.rp+' pts';rkPush()}
  phase='end';chkMs();save();sfx('end');clearInput();
@@ -2071,7 +2069,6 @@ hold('k',v=>inp.kick=v);hold('d',v=>inp.dash=v);
 $('ps').addEventListener('click',()=>HC.go('pausa'));
 $('sn').addEventListener('click',()=>{cfg.mute=!cfg.mute;if(!cfg.mute){audio();if(AC&&AC.resume)AC.resume()}syncMenu();save()});
 $('go').addEventListener('click',()=>{tour=false;chal=-1;duel=false;crz=false;startMatch()});
-$('bsb').addEventListener('click',()=>{tour=false;chal=-1;duel=false;crz=false;beach2=true;startMatch()});
 const blS=()=>ST.bl||(ST.bl={ph:1});
 let blRun=false,blM=false,blPh=1;const SANDB=()=>bch&&!blM;
 const BLR=[
@@ -2227,7 +2224,7 @@ BLA.push('🔢','🐍','😈','🎯');
 BLP.push({n:'🇯🇵 Japão Sub-20',lv:89,bots:BLJ,jp:1});
 BLD.push({gk:90,aw:1,d0:35,gap:4,ch:.55,cdm:1,sp:5,pro:1});
 let blCineT=0,blLast=[0,0],blUi=0,blGap=0;
-const blCh=()=>0;
+const blCh=()=>{const e=ST.bl&&ST.bl.ego;return e==null||!EGO[e]?0:EGO[e].ci};
 const BL_AWD=30; // duração do despertar (segundos)
 function blAwEnd(q){q.blAwk=false;q.blPas=null;q.blAw=null;q.awT=0;q.blD=0; // acabou: a barra enche de novo para um próximo despertar
  if(q===myPlayer){const dp=blDp(blCh());dp.aw=false;dp.d=0;save()}
@@ -2470,7 +2467,7 @@ function blUse(p,slot){if(!p||!p.bl||phase!=='play'||blCineT>0)return false;cons
  if(eff.st){for(const q of players)if(q.t!==p.t&&!q.gk&&dist(q,p)<(eff.sr||100))q.stun=eff.st}
  blCine(e0.n,e0.d,p.nm||p.bl.n,p,false);if(p===myPlayer)popup(p.x,p.y,e0.n.toUpperCase());return true}
 function blTouch(p){ball.bs=0;if(!p.bl)return;const X=p.blXT>0&&p.blX?p.blX:null;if(X&&X.rs){ball.vx=0;ball.vy=0;ball.sp=0;return}const f=Math.min(X&&X.dp!=null?X.dp:1,p.blPas&&p.blPas.dp!=null?p.blPas.dp:1);if(f<1){ball.vx*=f;ball.vy*=f}}
-function blTick(d){const UI=blM&&!online;const HU=UI&&!!myPlayer.bl;$('bldp').hidden=!HU;$('blbt').hidden=!HU;if(!UI)return;
+function blTick(d){const UI=blM&&!online;const HU=UI&&!!myPlayer.bl;$('bldp').hidden=!HU;$('blbt').hidden=!HU;if(!UI){blPlusHide();return}blPlusTick(d);
  const frozen=blCineT>0;if(frozen){blCineT-=d;if(blCineT<=0){$('blcine').classList.remove('on');cv.style.transform=''}}
  if(phase==='play'&&!frozen){for(const p of players){if(!p.bl)continue;if(p.blLab&&p.blLab.t>0)p.blLab.t-=d;if(p.blXT>0)p.blXT-=d;if(p.blSec>0)p.blSec-=d;if(p.blCD)for(let k=0;k<3;k++)if(p.blCD[k]>0)p.blCD[k]-=d}
   for(const p of players)if(p.bl&&p.blXT>0&&p.blX)blFxTick(p,d);
@@ -2508,17 +2505,118 @@ function blTick(d){const UI=blM&&!online;const HU=UI&&!!myPlayer.bl;$('bldp').hi
  blUi+=d;if(blUi>.2&&HU){blUi=0;const dp=blDp(blCh());$('bldpf').style.width=dp.d+'%';{const C=BLC[blCh()];$('bldpf').style.background='linear-gradient(90deg,'+C[0]+','+C[1]+')'}$('bldpt').textContent=dp.aw?'★ DESPERTOU':'Despertar '+Math.floor(dp.d)+'%';
   const sl=[myPlayer.bl.s,...(myPlayer.blAw||[])];for(let k=0;k<3;k++){const b=$('bl'+k),e=sl[k];b.hidden=false;b.disabled=!e;if(e){const c=(myPlayer.blCD&&myPlayer.blCD[k])||0;b.textContent=['E','R','F'][k]+' · '+e.n+(c>0?' ('+Math.ceil(c)+')':'')}else b.textContent=['E','R','F'][k]+' · 🔒 Despertar'}}
 }
-function blRender(){const el=$('blkl'),ch=$('blchr');ch.innerHTML='';
+/* ===== BL+ : ego, golpes lendários, combos, rivalidades e ranking (reaproveita blS/blUse/blShoot/save/toast) ===== */
+const EGO=[
+{n:'Ego de Rei',ic:'👑',ci:6,k:'finishing',b:{finishing:8,passing:-5},o:{t:'g',n:2},d:'Finalização e protagonismo. Objetivo da partida: 2 gols.',l:'Passes piores.'},
+{n:'Ego de Gênio',ic:'🧠',ci:1,k:'control',b:{control:8,strength:-5},o:{t:'d',n:3},d:'Domínio, dribles e jogadas técnicas. Objetivo: 3 dribles.',l:'Menos força.'},
+{n:'Ego de Estrategista',ic:'♟️',ci:0,k:'passing',b:{passing:8,finishing:-4},o:{t:'a',n:1},d:'Visão de jogo e criação. Objetivo: 1 assistência.',l:'Finaliza pior.'},
+{n:'Ego de Velocidade',ic:'⚡',ci:3,k:'speed',b:{speed:6,accel:6,control:-6},o:{t:'d',n:2},d:'Arrancadas e mudança de direção. Objetivo: 2 dribles.',l:'Menos controle.'},
+{n:'Ego Individualista',ic:'🔥',ci:2,k:'control',b:{control:5,strength:4,passing:-8},o:{t:'d',n:4},d:'Um contra um e autonomia. Objetivo: 4 dribles.',l:'Passe fraco.'}];
+const EXL=[0,60,150,300],RVN=['Desconhecido','Conhecido','Competidor','Rival','Rivalidade intensa','Rival lendário'];
+const CMB=[{a:'Isagi Yoichi',b:'Nagi Seishirō',n:'Passe Inteligente + Domínio',t:'fin',u:1,l:1,c:'#4fc3ff'},{a:'Isagi Yoichi',b:'Bachira Meguru',n:'Aproximação com Drible',t:'ast',u:2,l:1,c:'#ffd23f'},{a:'Nagi Seishirō',b:'Reo Mikage',n:'Passe com Domínio Extraordinário',t:'ast',u:3,l:2,c:'#b99aff'},{a:'Barou Shōei',b:'Isagi Yoichi',n:'Disputa e Finalização em Sequência',t:'duo',u:4,l:2,c:'#ff4d4d'},{a:'Rin Itoshi',b:'Itoshi Sae',n:'Passes Precisos + Finalização',t:'duo',u:6,l:3,c:'#2fe0c0',x:1}];
+const CHT={g:'marcar mais gols que',a:'dar mais assistências que',w:'vencer a partida contra',n:'ter nota superior à de',d:'fazer mais dribles que'};
+const PRV=['"Vai ser só mais um nome na minha lista."','"Já vi você jogar. Vai precisar de mais."','"Você de novo? Hoje eu fecho essa conta."','"Esse campo não cabe nós dois."','"Último aviso: o gol é meu."'];
+const BX={s:{},en:50,cd:0,ch:null,done:0,cbT:0,cbM:null,txt:''};
+const bp=()=>{const S=blS();for(const k of['ex','rv','rk','ach'])if(!S[k])S[k]={};if(S.ego===undefined)S.ego=null;return S};
+const egoLv=()=>{const S=bp();if(S.ego==null)return 0;const x=S.ex[S.ego]||0;let l=1;for(let i=1;i<EXL.length;i++)if(x>=EXL[i])l=i+1;return l};
+const rvLv=p=>p>=20?5:p>=13?4:p>=8?3:p>=4?2:p>=1?1:0;
+const blK=p=>p===myPlayer?'Você':(p.bl&&p.bl.n)||(p.blId?p.blId+' (aliado)':null);
+function blAch(id,tx,c){const S=bp();if(S.ach[id])return false;S.ach[id]=1;ST.coins+=c;toast('🏅 '+tx+' · +'+c+' 🪙');return true}
+function blPlus(){const S=bp(),F=BLP[blPh-1],E=S.ego!=null?EGO[S.ego]:null,lv=egoLv();BX.s={};BX.en=50;BX.cd=0;BX.done=0;BX.ch=null;BX.cbT=0;BX.cbM=null;
+ {const cur=myPlayer.a,base=cur===myPlayer.egoA?myPlayer.egoB:Object.assign({},cur),n=Object.assign({},base);myPlayer.egoB=base;
+  if(E){for(const k in E.b)n[k]=Math.max(20,Math.min(99,(n[k]||60)+E.b[k]));n[E.k]=Math.min(99,n[E.k]+(lv-1)*2)}myPlayer.a=n;myPlayer.egoA=n;myPlayer.m=.8+n.strength/99*.8}
+ if(E){const me=BLR[E.ci];myPlayer.bl=me;myPlayer.blC=BLC[E.ci];myPlayer.blCD=[0,0,0]}else myPlayer.bl=null;
+ const mn=E?BLR[E.ci].n:null,pool=[];CMB.forEach(c=>{if(c.a===mn)pool.push(c.b);else if(c.b===mn)pool.push(c.a)});['Isagi Yoichi','Nagi Seishirō','Bachira Meguru','Reo Mikage','Barou Shōei','Chigiri Hyoma','Kunigami Rensuke'].forEach(n=>{if(n!==mn&&!pool.includes(n))pool.push(n)});
+ players.filter(z=>z.t===0&&!z.gk&&!z.off&&z!==myPlayer).forEach((q,i)=>{q.blId=pool[i]||null;if(q.blId)q.nm=q.blId});
+ for(const q of players){if(q.gk||q.off)continue;const k=blK(q);if(k)BX.s[k]={t:q.t,g:0,a:0,d:0,lg:0}}
+ const bots=players.filter(z=>z.t===1&&z.bl&&!z.gk&&!z.off);let top=null,tl=-1;for(const q of bots){const l=rvLv((S.rv[q.bl.n]||{}).p||0);if(l>tl){tl=l;top=q}}
+ if(top&&E){const T=['g','a','w','n','d'][Math.random()*5|0],nm=top.bl.n.split(' ')[0];BX.ch={w:top.bl.n,t:T,lv:tl};
+  toast('⚔ '+nm+' ['+RVN[tl]+'] '+PRV[Math.min(tl,4)]+' · Desafio: '+CHT[T]+' '+nm);
+  if(tl>=4){top.blD=Math.min(99,(top.blD||0)+30);popup(top.x,top.y,'⚔ '+nm.toUpperCase())}
+  if(tl>=5){top.a=Object.assign({},top.a);for(const k of['finishing','speed','control'])top.a[k]=Math.min(99,top.a[k]+4);toast('🏆 Confronto lendário contra '+nm+'!')}}
+ if(E)toast(E.ic+' '+E.n+' Nv'+lv+' · '+myPlayer.bl.s.n+' pronto (E)')}
+function blGoal(p,a,own){if(own||!p)return;const k=blK(p),s=k&&BX.s[k];if(s){s.g++;if(p.blXT>0||(BX.cbT>0&&(p===myPlayer||p===BX.cbM)))s.lg++}const ak=a&&blK(a);if(ak&&BX.s[ak]){BX.s[ak].a++;if(BX.cbT>0&&p===BX.cbM)BX.s[ak].lg++}if(p===myPlayer)BX.en=Math.min(100,BX.en+15);if(a===myPlayer)BX.en=Math.min(100,BX.en+10)}
+function blPlusHide(){const h=$('blxh');if(h)h.hidden=true}
+function blCbFind(){const me=myPlayer.bl;if(!me)return null;const S=bp(),lv=egoLv();let best=null,bd=1e9;for(const c of CMB){if(c.a!==me.n&&c.b!==me.n)continue;if(!(c.u>=6?S.done:S.ph>=c.u)||lv<c.l)continue;const o=c.a===me.n?c.b:c.a;for(const q of players){if(q.t!==0||q.gk||q.off||q===myPlayer||q.blId!==o)continue;const dd=dist(q,myPlayer);if(dd<260&&dd<bd){bd=dd;best={c,m:q}}}}return best}
+function blCombo(){if(!blM||online||phase!=='play'||blCineT>0||!myPlayer.bl)return;if(BX.cd>0)return toast('🤝 Combo recarregando ('+Math.ceil(BX.cd)+'s)');
+ if(lastP!==myPlayer||dist(myPlayer,ball)>36)return toast('🤝 Combo: precisa estar com a bola');const f=blCbFind();if(!f)return toast('🤝 Nenhum parceiro compatível por perto (ou combo bloqueado)');
+ if(BX.en<25)return toast('⚡ Energia insuficiente (25)');const{c,m}=f;if(c.t!=='ast'&&myPlayer.x<PW*.4)return toast('📍 Vá ao ataque para essa combinação');
+ BX.en-=25;BX.cd=14;BX.cbT=5;BX.cbM=m;const d=1,cl=c.c;ring(myPlayer.x,myPlayer.y,cl,90,.5);ring(m.x,m.y,cl,90,.5);burst(m.x,m.y,22,cl,260,.7);shake=Math.max(shake,10);blCine(c.n.toUpperCase(),'',c.n,myPlayer,false);popup(m.x,m.y-20,'COMBO!');BX.an={c:c,m:m,t0:performance.now()};sfx('goal');
+ let ch=.5+(myPlayer.a.passing+m.a.finishing-120)/250+.05*egoLv();for(const o of players)if(o.t===1&&!o.gk&&!o.off&&dist(o,m)<60)ch-=.08;ch=Math.max(.3,Math.min(.92,ch));
+ if(Math.random()>ch){BX.cd=7;ball.vx*=.2;ball.vy*=.2;return toast('🤝 Combo interceptado!')}
+ if(c.t==='ast'){ball.x=myPlayer.x+d*70;ball.y=myPlayer.y;ball.vx=d*300;ball.vy=(PH/2-ball.y)*.8;myPlayer.vx+=d*180;lastP=m;seenP=m;prevP=myPlayer;lastT=0;toast('🎯 Passe perfeito de '+m.blId.split(' ')[0]+'!')}
+ else{ball.x=m.x+d*16;ball.y=m.y;ball.vx=ball.vy=0;prevP=myPlayer;blShoot(m,{p:c.t==='duo'?1.7:1.4,cv:1.3,aim:1,fk:1,fr:.5});prevP=myPlayer;seenP=m;toast('💥 Finalização em dupla!')}}
+function blPlusTick(d){if(phase!=='play'||blCineT>0)return;BX.en=Math.min(100,BX.en+2.5*d);if(BX.cd>0)BX.cd-=d;if(BX.cbT>0)BX.cbT-=d;
+ for(const q of players){if(q.gk||q.off)continue;const k=blK(q);if(!k||!BX.s[k])continue;if(q.drC>0)q.drC-=d;
+  if(lastP===q&&dist(q,ball)<32&&Math.hypot(q.vx,q.vy)>40){let nr=false;for(const o of players)if(o.t!==q.t&&!o.gk&&!o.off&&dist(o,q)<44){nr=true;break}
+   q.drT=nr?(q.drT||0)+d:Math.max(0,(q.drT||0)-d);if(q.drT>.45&&!(q.drC>0)){q.drT=0;q.drC=1.5;BX.s[k].d++;if(q===myPlayer){BX.en=Math.min(100,BX.en+6);popup(q.x,q.y-20,'DRIBLE!')}}}else q.drT=0}
+ const S=bp(),E=S.ego!=null?EGO[S.ego]:null,h=$('blxh'),b=$('blcb'),f=blCbFind(),t='⚡'+Math.floor(BX.en)+' · '+(E?E.ic+' '+E.n+' Nv'+egoLv():'escolha um Ego no menu');
+ if(h){h.hidden=false;if(h.textContent!==t)h.textContent=t}if(b){b.hidden=!E;const l='🤝 Combo'+(BX.cd>0?' ('+Math.ceil(BX.cd)+')':f?' · '+f.m.blId.split(' ')[0]:' · —');if(b.textContent!==l)b.textContent=l}}
+const _blUse=blUse;
+blUse=function(p,s){if(p===myPlayer&&blM&&p.bl){const e=s===0?p.bl.s:(p.blAw&&p.blAw[s-1]);if(e&&!(p.blCD&&p.blCD[s]>0)){const c=s?45:30;if(BX.en<c){toast('⚡ Energia de ego insuficiente ('+Math.floor(BX.en)+'/'+c+')');return false}
+ if(e.fk&&p.x<PW*.4){toast('📍 Vá ao ataque para usar '+e.n);return false}const r=_blUse(p,s);if(r!==false)BX.en-=c;return r}}return _blUse(p,s)};
+function blPlusFin(pW){if(BX.done)return;BX.done=1;const S=bp(),me=BX.s['Você'];if(!me)return;const E=S.ego!=null?EGO[S.ego]:null;
+ for(const k in BX.s){const s=BX.s[k],w=score[s.t]>score[1-s.t],cs=score[1-s.t]===0;s.r=Math.max(3,Math.min(10,5.5+s.g*1.3+s.a*.9+s.d*.2+s.lg*.4+(w?.6:-.2)+(cs?.3:0)));s.w=w?1:0;
+  const r=S.rk[k]||(S.rk[k]={g:0,a:0,d:0,w:0,m:0,r:0,lg:0});r.g+=s.g;r.a+=s.a;r.d+=s.d;r.w+=s.w;r.m++;r.r+=s.r;r.lg+=s.lg;r.tm=(k==='Você'||k.endsWith('(aliado)'))?'Seu time':s.t===0?'Blue Lock':(BLP[blPh-1].jp?'Japão Sub-20':'Blue Lock')}
+ let tx='Nota '+me.r.toFixed(1)+' · '+me.g+'G '+me.a+'A '+me.d+'D';
+ if(E){const ob=E.o,v=ob.t==='g'?me.g:ob.t==='a'?me.a:me.d,ok=v>=ob.n,lv0=egoLv();S.ex[S.ego]=(S.ex[S.ego]||0)+15+me.g*10+(ok?40:0);if(ok){ST.coins+=30;toast('🎯 Objetivo do '+E.n+' cumprido! +30 🪙')}if(egoLv()>lv0)toast('⬆ '+E.n+' nível '+egoLv()+'! Novos combos podem ter sido liberados')}
+ const ch=BX.ch;
+ for(const q of players){if(!q.bl||q.t!==1||q.gk)continue;const s=BX.s[q.bl.n],n=q.bl.n,R=S.rv[n]||(S.rv[n]={p:0}),l0=rvLv(R.p);if(!s)continue;let g=1+(me.g>s.g?1:0)+(s.g>=me.g&&s.g>0?1:0);
+  if(ch&&ch.w===n){const ok=ch.t==='g'?me.g>s.g:ch.t==='a'?me.a>s.a:ch.t==='w'?pW:ch.t==='n'?me.r>s.r:me.d>s.d;if(ok){g+=3;tx+=' · Desafio vs '+n.split(' ')[0]+' ✔';toast('⚔ Desafio cumprido contra '+n.split(' ')[0]+'! +3 rivalidade');ST.coins+=20;
+    if(E&&S.ego===0&&n==='Rin Itoshi')blAch('reiRin','Conquista: Rei supera Rin',100);if(ch.lv>=5&&pW)blAch('leg'+n,'Título: Rival Lendário '+n.split(' ')[0],150)}}
+  R.p+=g;if(rvLv(R.p)>l0)toast('⚔ '+n.split(' ')[0]+': '+RVN[rvLv(R.p)])}
+ const rows=blRows(),top=(f)=>rows.slice().sort(f)[0].n==='Você';
+ if(me.g>0&&top((a,b)=>b.g-a.g||b.pt-a.pt)&&(S.rk['Você'].g>=3))blAch('art','Título: Artilheiro do Blue Lock',80);
+ if(top((a,b)=>b.a-a.a)&&S.rk['Você'].a>=2)blAch('gar','Título: Garçom do Blue Lock',80);
+ if(top((a,b)=>b.d-a.d)&&S.rk['Você'].d>=6)blAch('dri','Título: Melhor Driblador',80);
+ if(top((a,b)=>b.w-a.w)&&S.rk['Você'].w>=3)blAch('vit','Título: Mais Vitórias',80);
+ if(top((a,b)=>b.pt-a.pt)&&S.rk['Você'].m>=3)blAch('mvp','Título: Melhor Jogador do Blue Lock',150);
+ S.last=tx;toast('📊 '+tx);save()}
+function blRows(){const S=bp();const bn=['Você',...BLR.map(c=>c.n)];return[...bn,...Object.keys(S.rk).filter(n=>!bn.includes(n))].map(n=>{const r=S.rk[n]||{g:0,a:0,d:0,w:0,m:0,r:0,lg:0},av=r.m?r.r/r.m:0;return{n,tm:r.tm||(n==='Você'?'Seu time':BLJ.some(c=>c.n===n)?'Japão Sub-20':'Blue Lock'),g:r.g,a:r.a,d:r.d,w:r.w,m:r.m,av,pt:Math.round(r.g*10+r.a*7+r.d*1.2+r.w*6+(r.lg||0)*3+av*5)}})}
+const _blAbFx=blAbFx;
+blAbFx=function(p,g){_blAbFx(p,g);blCbFx(p,g)};
+function blCbFx(p,g){const a=BX.an;if(!a||p!==myPlayer)return;const t=(performance.now()-a.t0)/1000,T=1.5;if(t>T){BX.an=null;return}
+ const m=a.m,i=CMB.indexOf(a.c),c=a.c.c,u=t/T,x0=p.x,y0=p.y,x1=m.x,y1=m.y,gx=PW,gy=PH/2,L=(k)=>[x0+(x1-x0)*k,y0+(y1-y0)*k];
+ g.save();g.globalAlpha=Math.min(1,(1-u)*1.6);g.strokeStyle=c;g.fillStyle=c;g.shadowColor=c;g.shadowBlur=18;g.lineWidth=3;
+ if(i===0){const k=Math.min(1,u*3),q=L(k);g.beginPath();g.moveTo(x0,y0);g.lineTo(q[0],q[1]);g.stroke(); // raio de passe + buraco negro no parceiro
+  for(let j=0;j<4;j++){const r=(46-j*10)*(1-u*.6),s=t*(7+j*2)*(j%2?1:-1);g.beginPath();g.arc(x1,y1,r,s,s+4.2);g.stroke()}
+  if(u>.5){g.setLineDash([8,6]);g.beginPath();g.moveTo(x1,y1);g.lineTo(gx,gy);g.stroke()}}
+ else if(i===1){g.beginPath();g.moveTo(x0,y0);for(let j=1;j<=14;j++){const k=Math.min(1,u*2.2)*j/14,q=L(k),w=Math.sin(j*1.9+t*12)*16*(1-k*.4);g.lineTo(q[0]-(y1-y0)/ (Math.hypot(x1-x0,y1-y0)||1)*w,q[1]+(x1-x0)/(Math.hypot(x1-x0,y1-y0)||1)*w)}g.stroke();
+  for(let j=0;j<6;j++){const q=L(j/6),sy=Math.sin(t*9+j)*14;g.beginPath();g.arc(q[0],q[1]+sy,4+(j%2)*3,0,7);g.fill()}}
+ else if(i===2){const r=34+Math.sin(t*10)*6;for(const q of[[x0,y0],[x1,y1]])for(let j=0;j<3;j++){const s=t*5+j*2.09,rr=r+j*8;g.beginPath();g.arc(q[0],q[1],rr,s,s+2);g.stroke()}
+  const q=L(.5),d=22+u*30;g.beginPath();g.moveTo(q[0],q[1]-d);g.lineTo(q[0]+d,q[1]);g.lineTo(q[0],q[1]+d);g.lineTo(q[0]-d,q[1]);g.closePath();g.stroke()}
+ else if(i===3){const k=Math.min(1,u*2.5);for(const q of[[x0,y0],[x1,y1]]){g.beginPath();g.moveTo(q[0],q[1]);let X=q[0],Y=q[1];for(let j=1;j<=8;j++){X+=(gx-q[0])/8*k;Y+=((gy-q[1])/8+(j%2?-22:22))*k;g.lineTo(X,Y)}g.stroke()}
+  g.lineWidth=5;g.beginPath();g.moveTo(x1-40,y1-40);g.lineTo(x1+40,y1+40);g.moveTo(x1+40,y1-40);g.lineTo(x1-40,y1+40);g.stroke();g.beginPath();g.arc(x1,y1,20+u*90,0,7);g.stroke()}
+ else{let ph=0;g.beginPath();for(let j=0;j<60;j++){const th=j*.22+t*6,r=3*Math.pow(1.618,th/1.5708)*.06+j*.9;const X=(j%2?x1:x0)+Math.cos(th)*r*.6,Y=(j%2?y1:y0)+Math.sin(th)*r*.6;if(j<2)g.moveTo(X,Y);else g.lineTo(X,Y)}g.stroke();g.strokeStyle='#ffd23f';g.beginPath();g.moveTo(x0,y0);g.lineTo(gx,gy);g.moveTo(x1,y1);g.lineTo(gx,gy);g.stroke()}
+ g.restore()}
+
+let blpTab='ego',blpRk='pt';
+function blPanel(){const S=bp(),c=$('blpc');$('blpt').querySelectorAll('button').forEach(b=>b.style.opacity=b.dataset.t===blpTab?1:.55);let h='';
+ if(blpTab==='ego'){h='<p>Escolha seu estilo. Cada um tem vantagem e limitação; evolui com partidas e objetivos.</p>';EGO.forEach((E,i)=>{const x=S.ex[i]||0;let l=1;for(let j=1;j<EXL.length;j++)if(x>=EXL[j])l=j+1;h+='<button class="ghost" data-e="'+i+'" style="text-align:left;margin:3px 0;'+(S.ego===i?'outline:2px solid #ffd23f':'')+'"><b>'+E.ic+' '+E.n+'</b> · Nv'+l+' ('+x+' XP)'+(S.ego===i?' ✔':'')+'<br><small>'+E.d+' Golpe: '+BLR[E.ci].s.n+'. Limite: '+E.l+'</small></button>'})}
+ else if(blpTab==='rv'){h='<p>Rivalidades nascem nas partidas e geram desafios, provocações e confrontos.</p>';const k=Object.keys(S.rv);h+=k.length?k.map(n=>{const p=S.rv[n].p;return'<div style="margin:4px 0"><b>'+n+'</b> · '+RVN[rvLv(p)]+' ('+p+' pts)</div>'}).join(''):'<div>Nenhuma rivalidade ainda. Jogue as fases.</div>'}
+ else if(blpTab==='cb'){const lv=egoLv();h='<p>Precisa de Ego, bola e parceiro por perto. Libera com fase e nível de ego.</p>'+CMB.map(c=>{const ok=(c.u>=6?S.done:S.ph>=c.u)&&lv>=c.l;return'<div style="margin:4px 0">'+(ok?'✅ ':'🔒 ')+'<b>'+c.a.split(' ')[0]+' + '+c.b.split(' ')[0]+'</b>: '+c.n+'<br><small>Fase '+(c.u>=6?'Japão':c.u)+' · Ego Nv'+c.l+(c.x?' · só com Rin e Sae em campo (não jogável ainda)':'')+'</small></div>'}).join('')}
+ else{const cats=[['pt','Geral'],['g','Artilheiros'],['a','Garçons'],['d','Dribladores'],['av','Melhores'],['w','Vitórias']],rows=blRows().sort((a,b)=>b[blpRk]-a[blpRk]||b.pt-a.pt);
+  h='<div style="display:flex;flex-wrap:wrap;gap:3px">'+cats.map(([k,n])=>'<button class="ghost" data-r="'+k+'" style="'+(k===blpRk?'outline:2px solid #ffd23f':'')+'">'+n+'</button>').join('')+'</div><div style="overflow-x:auto"><table style="width:100%;font-size:11px;border-collapse:collapse"><tr><th>#</th><th>Jogador</th><th>Equipe</th><th>Pts</th><th>G</th><th>A</th><th>D</th><th>V</th><th>Nota</th></tr>'+rows.map((r,i)=>'<tr'+(r.n==='Você'?' style="color:#ffd23f"':'')+'><td>'+(i+1)+'</td><td>'+r.n+'</td><td>'+r.tm+'</td><td>'+r.pt+'</td><td>'+r.g+'</td><td>'+r.a+'</td><td>'+r.d+'</td><td>'+r.w+'</td><td>'+(r.m?r.av.toFixed(1):'-')+'</td></tr>').join('')+'</table></div><small>Pts = 10×G + 7×A + 6×V + 1,2×D + 3×golpes/combos + 5×nota média.</small>'+(S.last?'<p>Última partida: '+S.last+'</p>':'')+'<p>Conquistas: '+(Object.keys(S.ach).length||'nenhuma')+'</p>'}
+ c.innerHTML=h;c.querySelectorAll('[data-e]').forEach(b=>b.onclick=()=>{S.ego=+b.dataset.e;save();blPanel()});c.querySelectorAll('[data-r]').forEach(b=>b.onclick=()=>{blpRk=b.dataset.r;blPanel()})}
+function blPlusMenu(ch){[['ego','🧬 Ego'],['rv','⚔ Rivais'],['cb','🤝 Combos'],['rk','🏆 Ranking']].forEach(([t,n])=>{const b=document.createElement('button');b.className='ghost';b.type='button';b.textContent=n;b.onclick=()=>{blpTab=t;blPanel();show('blk',false);show('blp',true)};ch.appendChild(b)})}
+(function(){const o=document.createElement('div');o.className='ov';o.id='blp';o.hidden=true;o.setAttribute('role','dialog');o.innerHTML='<div class="card sm"><h2>Blue Lock+</h2><div id="blpt" style="display:flex;flex-wrap:wrap;gap:4px;justify-content:center"></div><div id="blpc" style="max-height:58vh;overflow:auto;margin:8px 0;font-size:12px"></div><button class="ghost" id="blpx" type="button">Voltar</button></div>';document.body.appendChild(o);
+ [['ego','🧬 Ego'],['rv','⚔ Rivais'],['cb','🤝 Combos'],['rk','🏆 Ranking']].forEach(([t,n])=>{const b=document.createElement('button');b.className='ghost';b.type='button';b.dataset.t=t;b.textContent=n;b.onclick=()=>{blpTab=t;blPanel()};$('blpt').appendChild(b)});
+ $('blpx').onclick=()=>{show('blp',false);blRender();show('blk',true)};
+ const h=document.createElement('div');h.id='blxh';h.hidden=true;h.style.cssText='position:fixed;left:8px;top:calc(8px + env(safe-area-inset-top,0px));z-index:5;font:600 11px system-ui;color:#fff;background:rgba(0,0,0,.55);padding:3px 7px;border-radius:8px;pointer-events:none';document.body.appendChild(h);
+ const b=document.createElement('button');b.className='ghost';b.id='blcb';b.type='button';b.hidden=true;b.onclick=blCombo;$('blbt').appendChild(b)})();
+addEventListener('keydown',e=>{if(e.code==='KeyC'&&!e.repeat&&blM&&phase==='play')blCombo()});
+
+function blRender(){const el=$('blkl'),ch=$('blchr');ch.innerHTML='';blPlusMenu(ch);
  el.innerHTML='';BLP.forEach((F,i)=>{const f=i+1,lk=F.jp?!blS().done:f>blS().ph;const b=document.createElement('button');b.className='ghost';b.type='button';b.disabled=lk;b.textContent=F.jp?(lk?'🔒 '+F.n+' · vença a Fase 5 para liberar':'▶ '+F.n+' ★★★★★ · '+F.bots.map(x=>x.n.split(' ')[0]).join(', ')):(lk?'🔒 ':'▶ ')+F.n+' '+'★'.repeat(f)+'☆'.repeat(5-f)+' · '+F.bots.map(x=>x.n.split(' ')[0]).join(', ');b.title=F.bots.map(x=>x.n+': '+x.s.n+' ('+x.s.d+')').join(' | ');b.onclick=()=>blStart(f);el.appendChild(b)})}
 function blStart(f){blRun=true;blPh=f;show('blk',false);startMatch()}
 function blClear(q){ // tira todo vestígio do modo Blue Lock (aura, despertar, habilidades) do jogador
  if(q.secA0){Object.assign(q.a,q.secA0);q.m=q.secM0;q.secA0=null}
- q.bl=null;q.blC=null;q.blAwk=false;q.awInf=false;q.blPas=null;q.blAw=null;q.blX=null;q.blXT=0;q.blCD=null;q.blLab=null;q.blSec=0;q.blSecP=0;q.blSecN=0;q.secOn=false;q.blD=0;q.blT0=0}
+ if(q.blId){q.blId=null;q.nm=null}q.bl=null;q.blC=null;q.blAwk=false;q.awInf=false;q.blPas=null;q.blAw=null;q.blX=null;q.blXT=0;q.blCD=null;q.blLab=null;q.blSec=0;q.blSecP=0;q.blSecN=0;q.secOn=false;q.blD=0;q.blT0=0}
 function blApply(){blGap=5;blCineT=0;$('blcine').classList.remove('on');cv.style.transform='';const F=BLP[blPh-1],D=BLD[blPh-1],bots=players.filter(z=>z.t===1&&!z.gk&&!z.off),ci=blCh(),me=BLR[ci],dp=blDp(ci);blLast=[score[0],score[1]];if(dp.aw){dp.aw=false;dp.d=0}
  players.filter(z=>z.t===1&&z.gk).forEach(z=>{z.a=base(D.gk,D.gk,D.gk)});
  F.bots.forEach((c,k)=>{const q=bots[k];if(!q)return;const a=base(F.lv,F.lv,F.lv);for(const key in c.b)a[key]=Math.min(99,(a[key]||0)+c.b[key]);for(const key of['speed','accel','stamina'])a[key]=Math.min(99,(a[key]||0)+D.sp);a.control=Math.max(a.control||0,F.lv-6);q.a=a;q.m=q.g0?q.m:.8+a.strength/99*.8;q.bl=c;q.blC=BLC[BLR.indexOf(c)];q.blAwk=false;q.blCD=[0,0,0];q.blX=null;q.blXT=0;q.blPas=null;q.blAw=null;q.blD=D.d0+Math.random()*40;q.nm=c.n;q.blLab=null;q.blSec=0;q.blSecP=20;q.blSecN=0;q.secOn=false;q.awInf=false;popup(q.x,q.y,c.s.n.toUpperCase());burst(q.x,q.y,10,'#4fc3ff',200,.5)});
  myPlayer.bl=null;myPlayer.blC=null;myPlayer.blAwk=false;myPlayer.blCD=[0,0,0];myPlayer.blX=null;myPlayer.blXT=0;myPlayer.blPas=null;myPlayer.blAw=null;
- toast('🔵 '+F.n)}
+ toast('🔵 '+F.n);blPlus()}
 $('blb').addEventListener('click',()=>{blRender();show('mn',false);show('blk',true)});
 $('blkc').addEventListener('click',()=>{show('blk',false);show('mn',true)});
 $('bl0').addEventListener('click',()=>blUse(myPlayer,0));$('bl1').addEventListener('click',()=>blUse(myPlayer,1));$('bl2').addEventListener('click',()=>blUse(myPlayer,2));
